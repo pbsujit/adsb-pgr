@@ -1,0 +1,30 @@
+#!/usr/bin/tclsh
+
+set result [exec curl http://www.flightroutelookup.com/FlightRoute/FlightLookup.wso/FlightLookup?UserName=TESTER&FlightNumber=[lindex $argv 0]&Latitude=[lindex $argv 1]&Longitude=[lindex $argv 2]&ModeScode=000000 2>err]
+
+set call_start [string first Callsign $result]
+set call_end [string first </Callsign $result]
+incr call_start 9
+incr call_end -1
+
+set caller [string range $result $call_start $call_end]
+
+set origin_start [string first AirportName $result]
+set origin_end [string first </AirportName $result]
+incr origin_start 12
+incr origin_end -1
+set from [string range $result $origin_start $origin_end]
+
+set result [string range $result [expr $origin_end+11] end]
+
+set origin_start [string first AirportName $result]
+set origin_end [string first </AirportName $result]
+incr origin_start 12
+incr origin_end -1
+set to [string range $result $origin_start $origin_end]
+
+set fd [open out w]
+puts $fd $from
+puts $fd $to
+puts $fd $caller
+
