@@ -1,0 +1,61 @@
+(very) short docu for the 'mds02..' programs
+--------------------------------------------
+mbr20110821
+
+
+ALL PROGRAMS ARE UNDER DEVELOPMENT AND ARE FAR FROM BEING FINISHED
+OR FREE OF ERRORS
+
+ALL DOCUMENTATION AND THE COMMENTS IN SOURCE FILES HAVE BEEN
+WRITTEN TO BE USED BY THE AUTHOR AND MAY CONTAIN ERRORS OR
+MISLEADING INFOS
+
+WARRANTY AND LICENSE: SEE SOURCES
+
+
+'mds02' fetches data from an 'PGR' or 'AVR' device, decodes it
+	into human readable format with aviation typical dimensions
+	and stores it in a shared memory region
+	
+	data from each icao address found are stored in a unique
+	data block in this region
+
+	writes a log file with progress- and error infos
+	
+	see (and edit) 'mds02.h' for program parameters
+	without modification 'mds' will be build for
+		- accepting data from a PGR device via '/dev/ttyACM0'
+		- no parameters are sent to PGR device on program start
+		- max. 100 icao addresses (planes) in shared memory
+		- planes (icao adresses) are deleted after 120 seconds
+		  without update
+		- no decoding of messages from df20/21 (try and error method)
+		- cpr ambiguity solving with odd/even position reports
+	
+	see 'mds02.h' for description of shared memory contents
+	
+'mds02pr'
+	example of how to access and use data from shared memory
+	
+	prints in a terminal window some selected data from shared
+	memory once per second (uses 'vt100' character sequences for
+	cursor and screen control, ok for 'xterm' and others, needs
+	line length of at least 80 characters)
+
+building
+	use 'make' to build 'mds02' and 'mds02pr' ('Makefile' supplied)
+	you need curl (search libcurl) for web lookup of flight information
+	you also need TCL 8.5 (see if tclsh is available)
+
+running
+	use 'mds02 -h' to get infos on command line parameters
+
+	start 'mds02' with appropriate parameters in a separate
+	terminal (xterm) window or in background ( ... &)
+	
+	then start 'mds02pr' (without any parameter)
+
+
+(The author is not a native speaker and apologizes for his
+erroneous English in all documentation !!!)
+
