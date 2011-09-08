@@ -187,8 +187,8 @@ int p_ref (void)
     state& s = plane_state [a.flight_number];
     if (d.from == "" && d.to == "" && ++d.tries < 3) { // look web to find flight itinerary for flight number(see ./lookup)
       static char from [256], to [256], callsign [256], latlon [256];
-      sprintf (latlon, " %f %f", a.p->lat, a.p->lon);
-      string cmd("./lookup " + string(a.p->acident) + latlon);
+      sprintf (latlon, " %f %f ", a.p->lat, a.p->lon);
+      string cmd("./lookup " + string(a.p->acident) + latlon + a.icao);
       system (cmd.c_str());
       ifstream fout ("out");
       fout.getline (from, 256, '\n');

@@ -1,6 +1,32 @@
 #!/usr/bin/tclsh
 
-set result [exec curl http://www.flightroutelookup.com/FlightRoute/FlightLookup.wso/FlightLookup?UserName=TESTER&FlightNumber=[lindex $argv 0]&Latitude=[lindex $argv 1]&Longitude=[lindex $argv 2]&ModeScode=000000 2>err]
+if {0} {
+puts [lindex $argv 0]
+puts [lindex $argv 1]
+puts [lindex $argv 2]
+puts [lindex $argv 3]
+}
+
+set result [exec curl http://www.flightroutelookup.com/FlightRoute/FlightLookup.wso/FlightLookup?UserName=TESTER&FlightNumber=[lindex $argv 0]&Latitude=51.477500&Longitude=-0.461389&ModeScode=[lindex $argv 3] 2>err]
+
+#set result [exec curl http://www.flightroutelookup.com/FlightRoute/FlightLookup.wso/FlightLookup?UserName=TESTER&FlightNumber=[lindex $argv 0]&Latitude=[lindex $argv 1]&Longitude=[lindex $argv 2]&ModeScode=[lindex $argv 3] 2>err]
+
+#puts $result
+#puts ===============
+
+if {0} {
+  set flightaware [exec curl http://www.flightware.com/live/flight/[lindex $argv 0] 2>err]
+
+  set origin_start [string first Origin= $flightaware]
+  set origin_end [string first &flightDestination $flightaware]
+  set from [string range $flightaware $origin_start $origin_end]
+
+  set dest_start [string first Destination= $flightaware]
+  set dest_end [string  first &departure $flightaware]
+  set to [string range $flightaware $dest_start $dest_end]
+
+  set caller {}
+}
 
 set call_start [string first Callsign $result]
 set call_end [string first </Callsign $result]
