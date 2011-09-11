@@ -7,12 +7,7 @@ puts [lindex $argv 2]
 puts [lindex $argv 3]
 }
 
-set result [exec curl http://www.flightroutelookup.com/FlightRoute/FlightLookup.wso/FlightLookup?UserName=TESTER&FlightNumber=[lindex $argv 0]&Latitude=51.477500&Longitude=-0.461389&ModeScode=[lindex $argv 3] 2>err]
-
-#set result [exec curl http://www.flightroutelookup.com/FlightRoute/FlightLookup.wso/FlightLookup?UserName=TESTER&FlightNumber=[lindex $argv 0]&Latitude=[lindex $argv 1]&Longitude=[lindex $argv 2]&ModeScode=[lindex $argv 3] 2>err]
-
-#puts $result
-#puts ===============
+set result [exec curl http://www.flightroutelookup.com/FlightRoute/FlightLookup.wso/FlightLookup?UserName=TESTER&FlightNumber=[lindex $argv 0]&Latitude=[lindex $argv 1]&Longitude=[lindex $argv 2]&ModeScode=[lindex $argv 3] 2>err]
 
 if {0} {
   set flightaware [exec curl http://www.flightware.com/live/flight/[lindex $argv 0] 2>err]
