@@ -36,6 +36,7 @@
 #include <map>
 #include <fstream>
 #include <sstream>
+#include <iomanip>
 using namespace std;
 
 #include "mds02.h"      /* description of structures
@@ -83,7 +84,7 @@ struct aircraft {
     height = p->alt;
     double dx = lat - O_POS_LAT, dy = lon - O_POS_LON, dz = height;
     distance2 = dx * dx + dy * dy + dz * dz;
-    stringstream ss; ss << std::hex << hex; ss >> icao;
+    stringstream ss; ss << setw(6) << setfill ('0') << std::hex << hex; ss >> icao;
     transform (icao.begin(), icao.end(), icao.begin(), ::toupper);
   }
 
@@ -197,7 +198,10 @@ int p_ref (void)
       d.from = from;
       d.to = to;
       d.callsign = callsign;
+      static char buf[512];
       system ("rm -f out");
+      sprintf (buf, "espeak \"contact made %s\" 2>err&", d.callsign.c_str());
+      system (buf);
     }
 
     if (show == "both" || show == s.stat || show == "level") {
