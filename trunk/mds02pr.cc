@@ -200,8 +200,6 @@ int p_ref (void)
       d.callsign = callsign;
       static char buf[512];
       system ("rm -f out");
-      sprintf (buf, "espeak \"contact made %s\" 2>err&", d.callsign.c_str());
-      system (buf);
     }
 
     if (show == "both" || show == s.stat || show == "level") {
