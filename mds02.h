@@ -66,8 +66,8 @@
 					 * reports */
 #define DEF_SF_NAME	"./mds02.dat"
 					/* default file for saving data */
-#define O_POS_LAT	50.6049
-#define O_POS_LON	6.9875
+#define O_POS_LAT	51.418631
+#define O_POS_LON	-0.283287
 					/* observer position in degr. */
 
 /* flag for CPR ambiguity (global / local) */
