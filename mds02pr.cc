@@ -123,9 +123,11 @@ struct info { // from web lookup
   string type;
   string from;
   string to;
+  string milesdown;
+  string milestogo;
 
   int tries; // num times to lookup web b4 giving up
-  info () : tries(0) {}
+  info () : tries(0), milesdown ("0"), milestogo ("0") {}
 
 };
 
@@ -187,24 +189,27 @@ int p_ref (void)
     info& d = plane_info [a.icao];
     state& s = plane_state [a.flight_number];
     if (d.from == "" && d.to == "" && ++d.tries < 3) { // look web to find flight itinerary for flight number(see ./lookup)
-      static char from [256], to [256], callsign [256], latlon [256];
+      static char from [256], to [256], callsign [256], latlon [256], milesdown [256], milestogo [256];
       sprintf (latlon, " %f %f ", a.p->lat, a.p->lon);
-      string cmd("./lookup " + string(a.p->acident) + latlon + a.icao);
+      string cmd("./lookup " + d.reg + ' ' + string(a.p->acident) + latlon + a.icao);
       system (cmd.c_str());
       ifstream fout ("out");
       fout.getline (from, 256, '\n');
       fout.getline (to, 256, '\n');
       fout.getline (callsign, 256, '\n');
+      fout.getline (milesdown, 256, '\n');
+      fout.getline (milestogo, 256, '\n');
       d.from = from;
       d.to = to;
       d.callsign = callsign;
-      static char buf[512];
+      d.milesdown = milesdown;
+      d.milestogo = milestogo;
       system ("rm -f out");
     }
 
     if (show == "both" || show == s.stat || show == "level") {
       if (s.stat == "ascending") printf ("\e[1;35m"); else if (s.stat == "descending") printf ("\e[1;31m");
-      printf ("%03d %8s %6s %6s %4s %05.0f %10s to %05.0f %17s %s -> %s\n", ++k, a.flight_number.c_str(), a.icao.c_str(), d.reg.c_str(), d.type.c_str(), s.alt, s.stat.c_str(), s.fcu_alt, d.callsign.c_str(), d.from.c_str(), d.to.c_str());
+      printf ("%03d %8s %6s %6s %4s %05.0f %10s to %05.0f %s -> %s (%s) \n", ++k, a.flight_number.c_str(), a.icao.c_str(), d.reg.c_str(), d.type.c_str(), s.alt, s.stat.c_str(), s.fcu_alt, d.from.c_str(), d.to.c_str(), d.callsign.c_str());
     }
     printf ("\e[0;30m");
   }
@@ -247,7 +252,7 @@ main(int argc, char** argv)
 
   while(1) /* loop forever */ {
     printf("%s",top);
-    printf ("%3s %8s %6s %6s %4s %5s %19s %17s %s\n", "No:", "Flight  ", "ICAO  ", "Regn  ", "Type", "  Alt", "     State", "         Callsign", "From -> To");
+    printf ("%3s %8s %6s %6s %4s %5s %19s %s\n", "No:", "Flight  ", "ICAO  ", "Regn  ", "Type", "  Alt", "     State", "From -> To");
     p_ref();
     sleep(1);
   }

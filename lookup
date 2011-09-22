@@ -1,39 +1,75 @@
 #!/usr/bin/tclsh
 
-if {0} {
-puts [lindex $argv 0]
-puts [lindex $argv 1]
-puts [lindex $argv 2]
-puts [lindex $argv 3]
+set reg [string trim [lindex $argv 0]]
+
+set fd [open out w]
+
+foreach {i j} {
+  BAW {British Airways} EIN {Aer Lingus} VIR {Virgin Atlantic} GFA {Gulf Air} UAE Emirates AIC {Air India}
+  AFR {Air France} DLH Lufthansa IBE Iberia ELY {Israel Air} SHT {British Airways Shuttle} BMA {British Midland}
+  TAM {TAM Brazilian} EZY EasyJet BCY CityJet ANZ {Air Newzealand} QFA Qantas SIA {Singapore Airlines} KAL {Korean Air}
+  ACA {Air Canada} CTN {Croatia Airlines} AAL {American Airlines} UAL {United Airlines} COA {Continental Airlines} RYR {Ryan Air}
+  TOM {Thomson Holidays} KLM {Royal Dutch Airlines} SAS {Scandinavian Airlines} TCX {Thomas Cook} DAL {Delta Airlines} IWD {Orbest Airlines}
+  AEE Aegean SLM {Surinam Airways} FIN {Fin Air} BMI {BMI Baby} TAP {Air Portugal} GMA {Gama Aviation} MOV {VIM Airlines}
+  THY {Turkish Airlines} RZO {SATA International} TSC {Air Transat} SWR {Swiss Airlines} BEL {Brussels Airlines} MAU {Air Marutius}
+  OMA {Oman Air} JAT {JAT Airways} KFR Kingfisher JAI {Jet Airways} CKS {Kalitta Air} IRA {Iran Air} EXS Jet2 AMC {Air Malta} MON {Monarch Airlines}
+  AEU Astraeus MAS {Malaysian Airlines} AFL Aeroflot AWE {US Airways} SVA {Saudi Arabian Airlines} ALK {Srilankan Airlines} CPA {Cathay Pacific}
+  TSO {Trans Aero} AZA Alitalia ROT Tarom IB3 Iberia MEA {Middle Eastern Airlines}
+} {set airline($i) $j}
+
+if {1} {
+  set html [exec curl http://data.flight24.com/airplanes/$reg/ 2>err]
+  set today [clock format [clock seconds] -format "%Y-%m-%d"]
+  set start [string first @ $html]; incr start
+  set end [string first CET $html]; incr end -1
+  set day [string range [string trim [string range $html $start $end]] 0 [expr [string length $today] - 1]]
+  ;#puts "$today??$day / [string length $today], [string length $day]"
+  if {$today ne $day} {
+    puts $fd "unknown\nunknown\nunknown"
+    return
+  }
+
+  set start [string first {route from} $html]
+  set html [string range $html $start end]
+
+  foreach i {from to} {
+    set needle title="
+    set start [string first $needle $html]
+    incr start [string length $needle]
+    set html [string range $html $start end]
+    set end [string first {"} $html]
+    incr end -1
+    set result [string trim [string range $html 0 $end]]
+    puts $fd $result
+  }
+
+  set flight [string range [lindex $argv 1] 0 2]
+  if { [array names airline -exact $flight] ne "" } {
+    set caller $airline($flight)
+    puts $fd $caller
+  } else {
+    puts $fd unknown
+  }
 }
 
-set result [exec curl http://www.flightroutelookup.com/FlightRoute/FlightLookup.wso/FlightLookup?UserName=TESTER&FlightNumber=[lindex $argv 0]&Latitude=[lindex $argv 1]&Longitude=[lindex $argv 2]&ModeScode=[lindex $argv 3] 2>err]
-
 if {0} {
-  set flightaware [exec curl http://www.flightware.com/live/flight/[lindex $argv 0] 2>err]
 
-  set origin_start [string first Origin= $flightaware]
-  set origin_end [string first &flightDestination $flightaware]
-  set from [string range $flightaware $origin_start $origin_end]
-
-  set dest_start [string first Destination= $flightaware]
-  set dest_end [string  first &departure $flightaware]
-  set to [string range $flightaware $dest_start $dest_end]
-
-  set caller {}
-}
+set result [exec curl http://www.flightroutelookup.com/FlightRoute/FlightLookup.wso/FlightLookup?UserName=TESTER&FlightNumber=[lindex $argv 1]&Latitude=[lindex $argv 2]&Longitude=[lindex $argv 3]&ModeScode=[lindex $argv 4] 2>err]
 
 set call_start [string first Callsign $result]
 set call_end [string first </Callsign $result]
 incr call_start 9
 incr call_end -1
 
+;# callsign
 set caller [string range $result $call_start $call_end]
 
 set origin_start [string first AirportName $result]
 set origin_end [string first </AirportName $result]
 incr origin_start 12
 incr origin_end -1
+
+;# from airport
 set from [string range $result $origin_start $origin_end]
 
 set result [string range $result [expr $origin_end+11] end]
@@ -42,10 +78,26 @@ set origin_start [string first AirportName $result]
 set origin_end [string first </AirportName $result]
 incr origin_start 12
 incr origin_end -1
+
+;# to airport
 set to [string range $result $origin_start $origin_end]
 
-set fd [open out w]
+set miles_down_start [string first DistanceFromOriginNM $result]
+set miles_down_end [string first </DistanceFromOriginNM> $result]
+incr miles_down_start 21
+incr miles_down_end -1
+set miles_down [string range $result $miles_down_start $miles_down_end]
+
+set miles_togo_start [string first DistanceFromDestinationNM $result]
+set miles_togo_end [string first </DistanceFromDestinationNM> $result]
+incr miles_togo_start 26
+incr miles_togo_end -1
+set miles_togo [string range $result $miles_togo_start $miles_togo_end]
+
 puts $fd $from
 puts $fd $to
 puts $fd $caller
+puts $fd $miles_down
+puts $fd $miles_togo
 
+}
