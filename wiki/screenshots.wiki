@@ -6,3 +6,7 @@ blue = ascending & red = descending aircraft
 http://adsb-pgr.googlecode.com/svn/trunk/2.png
 
 only descending aircraft
+
+http://adsb-pgr.googlecode.com/svn/trunk/3.png
+
+only ascending aircraft
