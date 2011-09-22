@@ -1,2 +1,2 @@
 #labels Featured
-http://code.google.com/p/adsb-pgr/source/browse/trunk/1.png
+http://adsb-pgr.googlecode.com/svn/trunk/1.png
