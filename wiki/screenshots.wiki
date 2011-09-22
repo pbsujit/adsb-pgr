@@ -1,2 +1,8 @@
 #labels Featured
 http://adsb-pgr.googlecode.com/svn/trunk/1.png
+
+blue = ascending & red = descending aircraft
+
+http://adsb-pgr.googlecode.com/svn/trunk/2.png
+
+only descending aircraft
