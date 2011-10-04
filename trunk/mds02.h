@@ -45,7 +45,7 @@
 					 *  datasets (first dataset with
 					 *    index 0 is always empty and
 					 *    filled with 'unknown' data */
-#define L_TIME 120
+#define L_TIME 240 
 					/* lifetime in sec of data in
 					 *  shared memory with no update */
 #define I_F_NAME	"/dev/ttyACM0"
