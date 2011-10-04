@@ -47,6 +47,10 @@ char t_string[5];     /* time string */
 struct Misc *p_mi;      /* pointer to 'Misc' structure in
            * shared memory */
 
+
+int lookup_timeout = 0;
+const int max_lookup_timeout = 60;
+
 /* ------------------------------------------------------------------------
  * make time string MM:SS 'tstr' from unix time
  * ------------------------------------------------------------------------ */
@@ -188,7 +192,7 @@ int p_ref (void)
     aircraft& a = planes [i];
     info& d = plane_info [a.icao];
     state& s = plane_state [a.flight_number];
-    if (d.from == "" && d.to == "" && ++d.tries < 3) { // look web to find flight itinerary for flight number(see ./lookup)
+    if (lookup_timeout > max_lookup_timeout) { // look web to find flight itinerary for flight number(see ./lookup)
       static char from [256], to [256], callsign [256], latlon [256], milesdown [256], milestogo [256];
       sprintf (latlon, " %f %f ", a.p->lat, a.p->lon);
       string cmd("./lookup " + d.reg + ' ' + string(a.p->acident) + latlon + a.icao);
@@ -213,6 +217,8 @@ int p_ref (void)
     }
     printf ("\e[0;30m");
   }
+
+  if (lookup_timeout > max_lookup_timeout) lookup_timeout = 0;
 
 }
 
@@ -255,6 +261,7 @@ main(int argc, char** argv)
     printf ("%3s %8s %6s %6s %4s %5s %19s %s\n", "No:", "Flight  ", "ICAO  ", "Regn  ", "Type", "  Alt", "     State", "From -> To");
     p_ref();
     sleep(1);
+    ++lookup_timeout;
   }
 
 }

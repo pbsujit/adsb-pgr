@@ -14,7 +14,8 @@ foreach {i j} {
   THY {Turkish Airlines} RZO {SATA International} TSC {Air Transat} SWR {Swiss Airlines} BEL {Brussels Airlines} MAU {Air Marutius}
   OMA {Oman Air} JAT {JAT Airways} KFR Kingfisher JAI {Jet Airways} CKS {Kalitta Air} IRA {Iran Air} EXS Jet2 AMC {Air Malta} MON {Monarch Airlines}
   AEU Astraeus MAS {Malaysian Airlines} AFL Aeroflot AWE {US Airways} SVA {Saudi Arabian Airlines} ALK {Srilankan Airlines} CPA {Cathay Pacific}
-  TSO {Trans Aero} AZA Alitalia ROT Tarom IB3 Iberia MEA {Middle Eastern Airlines}
+  TSO {Trans Aero} AZA Alitalia ROT Tarom IB3 Iberia MEA {Middle Eastern Airlines} QTR {Qatar Airways} PIA {Pakistan International}
+  ICE {Iceland Air} SAA {South African Airways} ETH Ethiopian ETD Etihad CLX CargoLux CCA {Air China} AAR {Asiana Airlines}
 } {set airline($i) $j}
 
 if {1} {
