@@ -195,10 +195,10 @@ int p_ref (void)
       static char from [256], to [256], callsign [256], altt [256], milesdown [256], milestogo [256], status[256];
       sprintf (altt, " %05d ", (int)s.alt);
       sprintf (status, " %s to %05d", s.stat.c_str(), (int)s.fcu_alt);
-      string flightid (a.p->acident); if (flightid.length() < 3) flightid = "UNKNOWN";
+      string flightid (a.p->acident); if (flightid.length() < 3) flightid = "unknown";
       if (d.reg.length () < 3) {
-        d.reg = "UNKNOWN";
-        d.type = "UNKNOWN";
+        d.reg = "unknown";
+        d.type = "unknown";
       }
       string cmd("./lookup " + d.reg + ' ' + flightid + altt + a.icao + ' ' + d.type + status);
       system (cmd.c_str());
