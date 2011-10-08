@@ -22,13 +22,13 @@ foreach {i j} {
   TAM {TAM Brazilian} EZY EasyJet BCY CityJet ANZ {Air Newzealand} QFA Qantas SIA {Singapore Airlines} KAL {Korean Air}
   ACA {Air Canada} CTN {Croatia Airlines} AAL {American Airlines} UAL {United Airlines} COA {Continental Airlines} RYR {Ryan Air}
   TOM {Thomson Airways} KLM {Royal Dutch Airlines} SAS {Scandinavian Airlines} TCX {Thomas Cook} DAL {Delta Airlines} IWD {Orbest Airlines}
-  AEE Aegean SLM {Surinam Airways} FIN {Fin Air} BMI {BMI Baby} TAP {Air Portugal} GMA {Gama Aviation} MOV {VIM Airlines}
-  THY {Turkish Airlines} RZO {SATA International} TSC {Air Transat} SWR {Swiss Airlines} BEL {Brussels Airlines} MAU {Air Marutius}
+  AEE {Aegean Airlines} SLM {Surinam Airways} FIN {Fin Air} BMI {BMI Baby} TAP {Air Portugal} GMA {Gama Aviation} MOV {VIM Airlines}
+  THY {Turkish Airlines} RZO {SATA International} TSC {Air Transat} SWR {Swiss Air} BEL {Brussels Airlines} MAU {Air Marutius}
   OMA {Oman Air} JAT {JAT Airways} KFR Kingfisher JAI {Jet Airways} CKS {Kalitta Air} IRA {Iran Air} EXS Jet2 AMC {Air Malta} MON {Monarch Airlines}
   AEU Astraeus MAS {Malaysian Airlines} AFL Aeroflot AWE {US Airways} SVA {Saudi Arabian Airlines} ALK {Srilankan Airlines} CPA {Cathay Pacific}
   TSO {Trans Aero} AZA Alitalia ROT Tarom IB3 Iberia MEA {Middle Eastern Airlines} QTR {Qatar Airways} PIA {Pakistan International}
   ICE {Iceland Air} SAA {South African Airways} ETH Ethiopian ETD Etihad CLX CargoLux CCA {Air China} AAR {Asiana Airlines} RBA {Royal Brunei Airlines}
-  SEY {Air Seychelles} MSR {EgyptAir} THA {Thai Airways} EVA {Eva Air} AUA {Austrian Airlines} NAX {Norweigian Air Shuttle}
+  SEY {Air Seychelles} MSR {EgyptAir} THA {Thai Airways} EVA {Eva Air} AUA {Austrian Airlines} NAX {Norweigian Air Shuttle} KAC {Kuwait Airways}
 } {set airline($i) $j}
 
 if {1} {
@@ -40,7 +40,13 @@ if {1} {
   set day [string range [string trim [string range $html $start $end]] 0 [expr [string length $today] - 1]]
   ;#puts "$today??$day / [string length $today], [string length $day]"
   if {$today ne $day} {
+    set from unknown
+    set to unknown
+    set caller unknown
     puts $fd "unknown\nunknown\nunknown"
+    set poster "http://manurevah.com/lhr/flight_post.php?flight=$flightnum&&icao=$icao&regn=$reg&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent"
+    exec curl $poster 2>err
+
     return
   }
 
@@ -72,7 +78,6 @@ space20 to
 space20 caller
 
   set poster "http://manurevah.com/lhr/flight_post.php?flight=$flightnum&&icao=$icao&regn=$reg&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent"
-  puts $poster
   exec curl $poster 2>err
 }
 
