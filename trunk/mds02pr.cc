@@ -47,9 +47,8 @@ char t_string[5];     /* time string */
 struct Misc *p_mi;      /* pointer to 'Misc' structure in
            * shared memory */
 
-
-int lookup_timeout = 0;
-const int max_lookup_timeout = 60;
+int max_lookup_timeout = 0;
+int lookup_timeout = 1;
 
 /* ------------------------------------------------------------------------
  * make time string MM:SS 'tstr' from unix time
@@ -193,9 +192,15 @@ int p_ref (void)
     info& d = plane_info [a.icao];
     state& s = plane_state [a.flight_number];
     if (lookup_timeout > max_lookup_timeout) { // look web to find flight itinerary for flight number(see ./lookup)
-      static char from [256], to [256], callsign [256], latlon [256], milesdown [256], milestogo [256];
-      sprintf (latlon, " %f %f ", a.p->lat, a.p->lon);
-      string cmd("./lookup " + d.reg + ' ' + string(a.p->acident) + latlon + a.icao);
+      static char from [256], to [256], callsign [256], altt [256], milesdown [256], milestogo [256], status[256];
+      sprintf (altt, " %05d ", (int)s.alt);
+      sprintf (status, " %s to %05d", s.stat.c_str(), (int)s.fcu_alt);
+      string flightid (a.p->acident); if (flightid.length() < 3) flightid = "UNKNOWN";
+      if (d.reg.length () < 3) {
+        d.reg = "UNKNOWN";
+        d.type = "UNKNOWN";
+      }
+      string cmd("./lookup " + d.reg + ' ' + flightid + altt + a.icao + ' ' + d.type + status);
       system (cmd.c_str());
       ifstream fout ("out");
       fout.getline (from, 256, '\n');
@@ -226,7 +231,18 @@ int p_ref (void)
  * ------------------------------------------------------------------------ */
 main(int argc, char** argv)
 {
-  if (argc < 2) show = "both"; else show = argv[1];
+  if (argc < 2) {
+    show = "both";
+  } else {
+    show = argv[1];
+  }
+
+  if (argc == 3) {
+    stringstream ss3; ss3 << argv[2];
+    ss3 >> max_lookup_timeout;
+  } else max_lookup_timeout = 60;
+
+  lookup_timeout = max_lookup_timeout + 1;
 
   int n,k;
 

@@ -1,6 +1,18 @@
 #!/usr/bin/tclsh
 
+proc space20 {w} {
+  upvar $w t
+  set t [string map {{ } %20} $t] 
+}
+
 set reg [string trim [lindex $argv 0]]
+set flightnum [lindex $argv 1]
+set alt "[lindex $argv 2] ft"
+space20 alt
+set icao [lindex $argv 3]
+set type [lindex $argv 4]
+set intent "[lrange $argv 5 7] ft"
+space20 intent
 
 set fd [open out w]
 
@@ -9,16 +21,18 @@ foreach {i j} {
   AFR {Air France} DLH Lufthansa IBE Iberia ELY {Israel Air} SHT {British Airways Shuttle} BMA {British Midland}
   TAM {TAM Brazilian} EZY EasyJet BCY CityJet ANZ {Air Newzealand} QFA Qantas SIA {Singapore Airlines} KAL {Korean Air}
   ACA {Air Canada} CTN {Croatia Airlines} AAL {American Airlines} UAL {United Airlines} COA {Continental Airlines} RYR {Ryan Air}
-  TOM {Thomson Holidays} KLM {Royal Dutch Airlines} SAS {Scandinavian Airlines} TCX {Thomas Cook} DAL {Delta Airlines} IWD {Orbest Airlines}
+  TOM {Thomson Airways} KLM {Royal Dutch Airlines} SAS {Scandinavian Airlines} TCX {Thomas Cook} DAL {Delta Airlines} IWD {Orbest Airlines}
   AEE Aegean SLM {Surinam Airways} FIN {Fin Air} BMI {BMI Baby} TAP {Air Portugal} GMA {Gama Aviation} MOV {VIM Airlines}
   THY {Turkish Airlines} RZO {SATA International} TSC {Air Transat} SWR {Swiss Airlines} BEL {Brussels Airlines} MAU {Air Marutius}
   OMA {Oman Air} JAT {JAT Airways} KFR Kingfisher JAI {Jet Airways} CKS {Kalitta Air} IRA {Iran Air} EXS Jet2 AMC {Air Malta} MON {Monarch Airlines}
   AEU Astraeus MAS {Malaysian Airlines} AFL Aeroflot AWE {US Airways} SVA {Saudi Arabian Airlines} ALK {Srilankan Airlines} CPA {Cathay Pacific}
   TSO {Trans Aero} AZA Alitalia ROT Tarom IB3 Iberia MEA {Middle Eastern Airlines} QTR {Qatar Airways} PIA {Pakistan International}
-  ICE {Iceland Air} SAA {South African Airways} ETH Ethiopian ETD Etihad CLX CargoLux CCA {Air China} AAR {Asiana Airlines}
+  ICE {Iceland Air} SAA {South African Airways} ETH Ethiopian ETD Etihad CLX CargoLux CCA {Air China} AAR {Asiana Airlines} RBA {Royal Brunei Airlines}
+  SEY {Air Seychelles} MSR {EgyptAir} THA {Thai Airways} EVA {Eva Air} AUA {Austrian Airlines} NAX {Norweigian Air Shuttle}
 } {set airline($i) $j}
 
 if {1} {
+
   set html [exec curl http://data.flight24.com/airplanes/$reg/ 2>err]
   set today [clock format [clock seconds] -format "%Y-%m-%d"]
   set start [string first @ $html]; incr start
@@ -42,15 +56,24 @@ if {1} {
     incr end -1
     set result [string trim [string range $html 0 $end]]
     puts $fd $result
+    set $i $result
   }
 
   set flight [string range [lindex $argv 1] 0 2]
   if { [array names airline -exact $flight] ne "" } {
     set caller $airline($flight)
-    puts $fd $caller
   } else {
-    puts $fd unknown
+    set caller unknown
   }
+  puts $fd $caller
+
+space20 from
+space20 to
+space20 caller
+
+  set poster "http://manurevah.com/lhr/flight_post.php?flight=$flightnum&&icao=$icao&regn=$reg&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent"
+  puts $poster
+  exec curl $poster 2>err
 }
 
 if {0} {
