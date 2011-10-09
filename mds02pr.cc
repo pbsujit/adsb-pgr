@@ -199,7 +199,7 @@ int p_ref (void)
 
       string itinerary;
       if (++d.tries >= info::MAX_TRIES) itinerary = "0"; else itinerary = "1";
-      string cmd("./lookup " + flightid + ' ' + a.icao + ' ' + d.reg + ' ' + d.type + ' ' + ' ' + altitude + ' ' + status);
+      string cmd("./lookup " + flightid + ' ' + a.icao + ' ' + d.reg + ' ' + d.type + ' ' + itinerary + ' ' + altitude + ' ' + status);
       system (cmd.c_str());
 
       if (itinerary == "1") {
