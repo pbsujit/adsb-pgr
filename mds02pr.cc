@@ -122,15 +122,13 @@ struct state {
 struct info { // from web lookup
 
   string reg; // registration number
-  string callsign;
+  string airline;
   string type;
   string from;
   string to;
-  string milesdown;
-  string milestogo;
-
   int tries; // num times to lookup web b4 giving up
-  info () : tries(0), milesdown ("0"), milestogo ("0") {}
+  static const int MAX_TRIES = 5;
+  info () : reg("unknown"), airline("unknown"), type("unknown"), from("unknown"), to("unknown"), tries(0) {}
 
 };
 
@@ -149,7 +147,6 @@ int p_ref (void)
 
    int n = 0;
 
-
 /* fetching data from shared memory using routines from 'shmsub02' */
 
    p0 = p_icao(0);      /* p0 points to empty structure */
@@ -161,24 +158,22 @@ int p_ref (void)
      aircraft& plane = planes [planes.size() - 1];
      state& ps = plane_state [plane.flight_number];
      if (ps.stat == "unknown") {
-      ps.stat = "level";
+      ps.stat = "level at ";
       ps.last_alt = ps.alt = ps.fcu_alt = p->alt;
      } else {
-      ps.alt = p->alt;
-      double delta_alt = ps.alt - ps.last_alt;
-      ps.delta_alt += delta_alt;
-      if (++ps.ndelta >= state::MAX_DELTAS) {
-        delta_alt = ps.delta_alt / state::MAX_DELTAS;
-        ps.ndelta = ps.delta_alt = 0;
-        if (delta_alt > 0) ps.stat = "ascending"; else if (delta_alt < 0) ps.stat = "descending";
-      }
-      ps.last_alt = ps.alt;
-    }
-
-    // round fcu_alt to nearest 10
-    ps.fcu_alt = p->bds.fcu_alt_40 - (int) p->bds.fcu_alt_40 % 10;
-    if (ps.fcu_alt < 0) ps.fcu_alt = 0;
-
+        ps.alt = p->alt;
+        double delta_alt = ps.alt - ps.last_alt;
+        ps.delta_alt += delta_alt;
+        if (++ps.ndelta >= state::MAX_DELTAS) {
+          delta_alt = ps.delta_alt / state::MAX_DELTAS;
+          ps.ndelta = ps.delta_alt = 0;
+          if (delta_alt > 0) ps.stat = "ascending to"; else if (delta_alt < 0) ps.stat = "descending to";
+        }
+        ps.last_alt = ps.alt;
+     }
+     // round fcu_alt to nearest 10
+     ps.fcu_alt = p->bds.fcu_alt_40 - (int) p->bds.fcu_alt_40 % 10;
+     if (ps.fcu_alt < 0) ps.fcu_alt = 0;
    }
 
   }
@@ -192,33 +187,37 @@ int p_ref (void)
     info& d = plane_info [a.icao];
     state& s = plane_state [a.flight_number];
     if (lookup_timeout > max_lookup_timeout) { // look web to find flight itinerary for flight number(see ./lookup)
-      static char from [256], to [256], callsign [256], altt [256], milesdown [256], milestogo [256], status[256];
-      sprintf (altt, " %05d ", (int)s.alt);
-      sprintf (status, " %s to %05d", s.stat.c_str(), (int)s.fcu_alt);
+      static char from [256], to [256], airline [256], altitude [256], status[256];
+      sprintf (altitude, "%05d", (int)s.alt);
+      sprintf (status, "%s %05d", s.stat.c_str(), (int)s.fcu_alt);
       string flightid (a.p->acident); if (flightid.length() < 3) flightid = "unknown";
       if (d.reg.length () < 3) {
         d.reg = "unknown";
         d.type = "unknown";
+        d.tries = info::MAX_TRIES;
       }
-      string cmd("./lookup " + d.reg + ' ' + flightid + altt + a.icao + ' ' + d.type + status);
+
+      string itinerary;
+      if (++d.tries >= info::MAX_TRIES) itinerary = "0"; else itinerary = "1";
+      string cmd("./lookup " + flightid + ' ' + a.icao + ' ' + d.reg + ' ' + d.type + ' ' + ' ' + altitude + ' ' + status);
       system (cmd.c_str());
-      ifstream fout ("out");
-      fout.getline (from, 256, '\n');
-      fout.getline (to, 256, '\n');
-      fout.getline (callsign, 256, '\n');
-      fout.getline (milesdown, 256, '\n');
-      fout.getline (milestogo, 256, '\n');
-      d.from = from;
-      d.to = to;
-      d.callsign = callsign;
-      d.milesdown = milesdown;
-      d.milestogo = milestogo;
-      system ("rm -f out");
+
+      if (itinerary == "1") {
+        ifstream fout ("out");
+        fout.getline (from, 256, '\n');
+        fout.getline (to, 256, '\n');
+        fout.getline (airline, 256, '\n');
+        d.from = from;
+        d.to = to;
+        d.airline = airline;
+        system ("rm -f out");
+      }
+
     }
 
     if (show == "both" || show == s.stat || show == "level") {
-      if (s.stat == "ascending") printf ("\e[1;35m"); else if (s.stat == "descending") printf ("\e[1;31m");
-      printf ("%03d %8s %6s %6s %4s %05.0f %10s to %05.0f %s -> %s (%s) \n", ++k, a.flight_number.c_str(), a.icao.c_str(), d.reg.c_str(), d.type.c_str(), s.alt, s.stat.c_str(), s.fcu_alt, d.from.c_str(), d.to.c_str(), d.callsign.c_str());
+      if (s.stat == "ascending to") printf ("\e[1;35m"); else if (s.stat == "descending to") printf ("\e[1;31m");
+      printf ("%03d %8s %6s %6s %4s %05.0f %13s %05.0f %s -> %s (%s) \n", ++k, a.flight_number.c_str(), a.icao.c_str(), d.reg.c_str(), d.type.c_str(), s.alt, s.stat.c_str(), s.fcu_alt, d.from.c_str(), d.to.c_str(), d.airline.c_str());
     }
     printf ("\e[0;30m");
   }
