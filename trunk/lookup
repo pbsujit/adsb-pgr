@@ -19,7 +19,7 @@ foreach {i j} {
   ICE {Iceland Air} SAA {South African Airways} ETH Ethiopian ETD Etihad CLX CargoLux CCA {Air China} AAR {Asiana Airlines} RBA {Royal Brunei Airlines}
   SEY {Air Seychelles} MSR {EgyptAir} THA {Thai Airways} EVA {Eva Air} AUA {Austrian Airlines} NAX {Norweigian Air Shuttle} KAC {Kuwait Airways} CYP {Cyprus Air} TUA {Turkmenistan Airlines}
   SYR {Syrian Airlines} VLG Vueling CAL {China Airlines} TAR {Tunis Air} ANA {All Nippon Airways} KQA {Keynya Airways} LOT {LOT - Polish Airlines}
-  WZZ {Wizz Air}
+  WZZ {Wizz Air} DAH {Air Algerie}
 } {set airline($i) $j}
 
 
