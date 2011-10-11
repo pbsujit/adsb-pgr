@@ -19,7 +19,7 @@ foreach {i j} {
   ICE {Iceland Air} SAA {South African Airways} ETH Ethiopian ETD {Etihad Airways} CLX CargoLux CCA {Air China} AAR {Asiana Airlines} RBA {Royal Brunei Airlines}
   SEY {Air Seychelles} MSR {Egyptair} THA {Thai Airways} EVA {Eva Air} AUA {Austrian Airlines} NAX {Norweigian Air Shuttle} KAC {Kuwait Airways} CYP {Cyprus Air} TUA {Turkmenistan Airlines}
   SYR {Syrian Airlines} VLG {Vueling Airlines} CAL {China Airlines} TAR {Tunis Air} ANA {All Nippon Airways} KQA {Keynya Airways} LOT {LOT - Polish Airlines}
-  WZZ {Wizz Air} DAH {Air Algerie} BBC {Biman Bangladesh} MNB {MNB Cargo Airlines} RAM {Royal Air Maroc} JAL {Japan Airlines} RJA {Royal Jordanian Airlines} FDX FedEx
+  WZZ {Wizz Air} DAH {Air Algerie} BBC {Biman Bangladesh} MNB {MNB Cargo Airlines} RAM {Royal Air Maroc} JAL {Japan Airlines} RJA {Royal Jordanian Airlines} FDX FedEx ARA {Arik Air}
 } {set airline($i) $j}
 
 
@@ -36,6 +36,8 @@ foreach i {alt intent} {space20 $i}
   set fd [open out w]
 
   if {$iti eq "1"} {
+
+    puts "getting itinerary"
 
     set html [exec curl http://data.flight24.com/airplanes/$reg/ --max-time 5 2> err]
     set start [string first {route from} $html]
@@ -70,7 +72,7 @@ foreach i {alt intent} {space20 $i}
   } elseif {$iti eq "0"} {
     puts "partial posting"
     set poster "http://manurevah.com/lhr/flight_post.php?&icao=$icao&alt=$alt&intent=$intent"
-  }
+  } else return
 
   exec curl $poster >& err &
 

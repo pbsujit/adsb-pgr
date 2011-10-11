@@ -105,16 +105,12 @@ struct state {
   double alt; // current altitude in feet
   double last_alt; // last altitude
   double fcu_alt; // intended altitude
+  double last_delta_alt; // delta alt
 
-  // take MAX_DELTA height changes b4 deciding ascending or descending
-  int ndelta;
-  double delta_alt, last_delta_alt;
-  static const int MAX_DELTAS = 3;
 
   state () : stat ("unknown") {
     alt = last_alt = fcu_alt = 0;
-    ndelta = 0;
-    delta_alt = last_delta_alt = 0;
+    last_delta_alt = 0;
   }
 
 };
@@ -163,17 +159,13 @@ int p_ref (void)
      } else {
         ps.alt = p->alt;
         ps.last_delta_alt = ps.alt - ps.last_alt;
-        ps.delta_alt += ps.last_delta_alt;
-        if (++ps.ndelta >= state::MAX_DELTAS) {
-          double delta_alt = ps.delta_alt / state::MAX_DELTAS;
-          ps.ndelta = ps.delta_alt = 0;
-          if (delta_alt > 0) ps.stat = "ascending to"; else if (delta_alt < 0) ps.stat = "descending to";
-        }
-        ps.last_alt = ps.alt;
+        if (ps.last_delta_alt > 0) ps.stat = "ascending to"; else if (ps.last_delta_alt < 0) ps.stat = "descending to";
      }
+
      // round fcu_alt to nearest 10
      ps.fcu_alt = p->bds.fcu_alt_40 - (int) p->bds.fcu_alt_40 % 10;
      if (ps.fcu_alt < 0) ps.fcu_alt = 0;
+
    }
 
   }
@@ -187,10 +179,14 @@ int p_ref (void)
     info& d = plane_info [a.icao];
     state& s = plane_state [a.flight_number];
     if (lookup_timeout > max_lookup_timeout) { // look web to find flight itinerary for flight number(see ./lookup)
-      static char from [256], to [256], airline [256], altitude [256], status[256];
+      static const int sz = 1024;
+      static char from [sz], to [sz], airline [sz], altitude [sz], status[sz];
+
+      string flightid (a.p->acident);
+      if (flightid.length() < 3) flightid = "unknown";
+
       sprintf (altitude, "%05d", (int)s.alt);
       sprintf (status, "%s %05d", s.stat.c_str(), (int)s.fcu_alt);
-      string flightid (a.p->acident); if (flightid.length() < 3) flightid = "unknown";
       if (d.reg.length () < 3) {
         d.reg = "unknown";
         d.type = "unknown";
@@ -199,15 +195,17 @@ int p_ref (void)
 
       string itinerary;
       if (++d.tries >= info::MAX_TRIES) itinerary = "0"; else itinerary = "1";
-      if (s.last_delta_alt == 0) itinerary == "2";
+      if (s.last_delta_alt == 0) itinerary = "2";
+
       string cmd("./lookup " + flightid + ' ' + a.icao + ' ' + d.reg + ' ' + d.type + ' ' + itinerary + ' ' + altitude + ' ' + status);
       system (cmd.c_str());
+      cout << "exec " << cmd << endl;
 
       if (itinerary == "1") {
         ifstream fout ("out");
-        fout.getline (from, 256, '\n');
-        fout.getline (to, 256, '\n');
-        fout.getline (airline, 256, '\n');
+        fout.getline (from, sz, '\n');
+        fout.getline (to, sz, '\n');
+        fout.getline (airline, sz, '\n');
         d.from = from;
         d.to = to;
         d.airline = airline;
