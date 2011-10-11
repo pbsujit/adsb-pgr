@@ -8,7 +8,7 @@ proc space20 {w} {
 foreach {i j} {
   BAW {British Airways} EIN {Aer Lingus} VIR {Virgin Atlantic} GFA {Gulf Air} UAE Emirates AIC {Air India}
   AFR {Air France} DLH Lufthansa IBE Iberia ELY {El Al} SHT {British Airways Shuttle} BMA {British Midland}
-  TAM {TAM Brazilian} EZY easyJet BCY CityJet ANZ {Air Newzealand} QFA Qantas SIA {Singapore Airlines} KAL {Korean Air}
+  TAM {TAM Airlines} EZY easyJet BCY CityJet ANZ {Air Newzealand} QFA Qantas SIA {Singapore Airlines} KAL {Korean Air}
   ACA {Air Canada} CTN {Croatia Airlines} AAL {American Airlines} UAL {United Airlines} COA {Continental Airlines} RYR {Ryanair}
   TOM {Thomson Airways} KLM {Royal Dutch Airlines} SAS {Scandinavian Airlines} TCX {Thomas Cook Airlines} DAL {Delta Airlines} IWD {Orbest Airlines}
   AEE {Aegean Airlines} SLM {Surinam Airways} FIN Finnair BMI {BMI Baby} TAP {Air Portugal} GMA {Gama Aviation} MOV {VIM Airlines}
@@ -19,7 +19,7 @@ foreach {i j} {
   ICE {Iceland Air} SAA {South African Airways} ETH Ethiopian ETD {Etihad Airways} CLX CargoLux CCA {Air China} AAR {Asiana Airlines} RBA {Royal Brunei Airlines}
   SEY {Air Seychelles} MSR {EgyptAir} THA {Thai Airways} EVA {Eva Air} AUA {Austrian Airlines} NAX {Norweigian Air Shuttle} KAC {Kuwait Airways} CYP {Cyprus Air} TUA {Turkmenistan Airlines}
   SYR {Syrian Airlines} VLG Vueling CAL {China Airlines} TAR {Tunis Air} ANA {All Nippon Airways} KQA {Keynya Airways} LOT {LOT - Polish Airlines}
-  WZZ {Wizz Air} DAH {Air Algerie}
+  WZZ {Wizz Air} DAH {Air Algerie} BBC {Biman Bangladesh}
 } {set airline($i) $j}
 
 
