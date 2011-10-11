@@ -7,7 +7,7 @@ proc space20 {w} {
 
 foreach {i j} {
   BAW {British Airways} EIN {Aer Lingus} VIR {Virgin Atlantic} GFA {Gulf Air} UAE Emirates AIC {Air India}
-  AFR {Air France} DLH Lufthansa IBE Iberia ELY {Israel Air} SHT {British Airways Shuttle} BMA {British Midland}
+  AFR {Air France} DLH Lufthansa IBE Iberia ELY {El Ai Israel Airlines} SHT {British Airways Shuttle} BMA {British Midland}
   TAM {TAM Brazilian} EZY EasyJet BCY CityJet ANZ {Air Newzealand} QFA Qantas SIA {Singapore Airlines} KAL {Korean Air}
   ACA {Air Canada} CTN {Croatia Airlines} AAL {American Airlines} UAL {United Airlines} COA {Continental Airlines} RYR {Ryan Air}
   TOM {Thomson Airways} KLM {Royal Dutch Airlines} SAS {Scandinavian Airlines} TCX {Thomas Cook Airlines} DAL {Delta Airlines} IWD {Orbest Airlines}
