@@ -199,6 +199,7 @@ int p_ref (void)
 
       string itinerary;
       if (++d.tries >= info::MAX_TRIES) itinerary = "0"; else itinerary = "1";
+      if (s.delta_alt == 0) itinerary == "2";
       string cmd("./lookup " + flightid + ' ' + a.icao + ' ' + d.reg + ' ' + d.type + ' ' + itinerary + ' ' + altitude + ' ' + status);
       system (cmd.c_str());
 
