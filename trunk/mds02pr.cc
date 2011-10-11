@@ -108,13 +108,13 @@ struct state {
 
   // take MAX_DELTA height changes b4 deciding ascending or descending
   int ndelta;
-  double delta_alt;
+  double delta_alt, last_delta_alt;
   static const int MAX_DELTAS = 3;
 
   state () : stat ("unknown") {
     alt = last_alt = fcu_alt = 0;
     ndelta = 0;
-    delta_alt = 0;
+    delta_alt = last_delta_alt = 0;
   }
 
 };
@@ -162,10 +162,10 @@ int p_ref (void)
       ps.last_alt = ps.alt = ps.fcu_alt = p->alt;
      } else {
         ps.alt = p->alt;
-        double delta_alt = ps.alt - ps.last_alt;
-        ps.delta_alt += delta_alt;
+        ps.last_delta_alt = ps.alt - ps.last_alt;
+        ps.delta_alt += ps.last_delta_alt;
         if (++ps.ndelta >= state::MAX_DELTAS) {
-          delta_alt = ps.delta_alt / state::MAX_DELTAS;
+          double delta_alt = ps.delta_alt / state::MAX_DELTAS;
           ps.ndelta = ps.delta_alt = 0;
           if (delta_alt > 0) ps.stat = "ascending to"; else if (delta_alt < 0) ps.stat = "descending to";
         }
@@ -199,7 +199,7 @@ int p_ref (void)
 
       string itinerary;
       if (++d.tries >= info::MAX_TRIES) itinerary = "0"; else itinerary = "1";
-      if (s.delta_alt == 0) itinerary == "2";
+      if (s.last_delta_alt == 0) itinerary == "2";
       string cmd("./lookup " + flightid + ' ' + a.icao + ' ' + d.reg + ' ' + d.type + ' ' + itinerary + ' ' + altitude + ' ' + status);
       system (cmd.c_str());
 
