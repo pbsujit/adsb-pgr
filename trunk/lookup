@@ -1,5 +1,7 @@
 #!/usr/bin/tclsh
 
+puts "looking up"
+
 proc space20 {w} {
   upvar $w v
   set v [string map {{ } %20} $v]
@@ -10,7 +12,7 @@ foreach {i j} {
   AFR {Air France} DLH Lufthansa IBE Iberia ELY {El Al} SHT {British Airways Shuttle} BMA {British Midland}
   TAM {TAM Airlines} EZY easyJet BCY CityJet ANZ {Air Newzealand} QFA Qantas SIA {Singapore Airlines} KAL {Korean Air}
   ACA {Air Canada} CTN {Croatia Airlines} AAL {American Airlines} UAL {United Airlines} COA {Continental Airlines} RYR {Ryanair}
-  TOM {Thomson Airways} KLM {Royal Dutch Airlines} SAS {Scandinavian Airlines} TCX {Thomas Cook Airlines} DAL {Delta Airlines} IWD {Orbest Airlines}
+  TOM {Thomson Airways} KLM KLM SAS {Scandinavian Airlines} TCX {Thomas Cook Airlines} DAL {Delta Airlines} IWD {Orbest Airlines}
   AEE {Aegean Airlines} SLM {Surinam Airways} FIN Finnair BMI bmibaby TAP {Air Portugal} GMA {Gama Aviation} MOV {VIM Airlines}
   THY {Turkish Airlines} RZO {SATA International} TSC {Air Transat} SWR {Swiss Air} BEL {Brussels Airlines} MAU {Air Marutius}
   OMA {Oman Air} JAT {JAT Airways} KFR Kingfisher JAI {Jet Airways} CKS {Kalitta Air} IRA {Iran Air} EXS Jet2 AMC {Air Malta} MON {Monarch Airlines}
@@ -20,6 +22,7 @@ foreach {i j} {
   SEY {Air Seychelles} MSR {Egyptair} THA {Thai Airways} EVA {Eva Air} AUA {Austrian Airlines} NAX {Norweigian Air Shuttle} KAC {Kuwait Airways} CYP {Cyprus Air} TUA {Turkmenistan Airlines}
   SYR {Syrian Airlines} VLG {Vueling Airlines} CAL {China Airlines} TAR {Tunis Air} ANA {All Nippon Airways} KQA {Keynya Airways} LOT {LOT - Polish Airlines}
   WZZ {Wizz Air} DAH {Air Algerie} BBC {Biman Bangladesh} MNB {MNB Cargo Airlines} RAM {Royal Air Maroc} JAL {Japan Airlines} RJA {Royal Jordanian Airlines} FDX FedEx ARA {Arik Air}
+  ATN {Air Transport International} UA {United Airlines} CES {China Eastern Airlines} UZB {Uzbekistan Airways}
 } {set airline($i) $j}
 
 
@@ -37,9 +40,8 @@ foreach i {alt intent} {space20 $i}
 
   if {$iti eq "1"} {
 
-    puts "getting itinerary"
+    set html [exec curl http://data.flight24.com/airplanes/$reg/ --connect-timeout 10 2> err]
 
-    set html [exec curl http://data.flight24.com/airplanes/$reg/ --max-time 5 2> err]
     set start [string first {route from} $html]
     set html [string range $html $start end]
 
@@ -63,6 +65,7 @@ foreach i {alt intent} {space20 $i}
     }
 
     puts $fd $caller
+    close $fd
 
     space20 from
     space20 to
@@ -70,10 +73,9 @@ foreach i {alt intent} {space20 $i}
 
     set poster "http://manurevah.com/lhr/flight_post.php?flight=$flightnum&icao=$icao&regn=$reg&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent"
   } elseif {$iti eq "0"} {
-    puts "partial posting"
     set poster "http://manurevah.com/lhr/flight_post.php?&icao=$icao&alt=$alt&intent=$intent"
-  } else return
+  } else {puts "no lookup"; return}
 
   exec curl $poster >& err &
 
-
+  puts "lookup complete"

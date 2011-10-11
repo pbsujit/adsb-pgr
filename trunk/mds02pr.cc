@@ -47,8 +47,7 @@ char t_string[5];     /* time string */
 struct Misc *p_mi;      /* pointer to 'Misc' structure in
            * shared memory */
 
-int max_lookup_timeout = 0;
-int lookup_timeout = 1;
+int lookup_timeout = 60;
 
 /* ------------------------------------------------------------------------
  * make time string MM:SS 'tstr' from unix time
@@ -105,12 +104,12 @@ struct state {
   double alt; // current altitude in feet
   double last_alt; // last altitude
   double fcu_alt; // intended altitude
-  double last_delta_alt; // delta alt
+  double delta_alt; // delta alt
 
 
   state () : stat ("unknown") {
     alt = last_alt = fcu_alt = 0;
-    last_delta_alt = 0;
+    delta_alt = 0;
   }
 
 };
@@ -123,8 +122,7 @@ struct info { // from web lookup
   string from;
   string to;
   int tries; // num times to lookup web b4 giving up
-  static const int MAX_TRIES = 5;
-  info () : reg("unknown"), airline("unknown"), type("unknown"), from("unknown"), to("unknown"), tries(0) {}
+  info () : reg("unknown"), airline("unknown"), type("unknown"), from("unknown"), to("unknown"), tries(lookup_timeout) {}
 
 };
 
@@ -158,8 +156,9 @@ int p_ref (void)
       ps.last_alt = ps.alt = ps.fcu_alt = p->alt;
      } else {
         ps.alt = p->alt;
-        ps.last_delta_alt = ps.alt - ps.last_alt;
-        if (ps.last_delta_alt > 0) ps.stat = "ascending to"; else if (ps.last_delta_alt < 0) ps.stat = "descending to";
+        ps.delta_alt = (int)(ps.alt - ps.last_alt);
+        if (ps.delta_alt > 0) ps.stat = "ascending to"; else if (ps.delta_alt < 0) ps.stat = "descending to";
+        ps.last_alt = ps.alt;
      }
 
      // round fcu_alt to nearest 10
@@ -178,41 +177,42 @@ int p_ref (void)
     aircraft& a = planes [i];
     info& d = plane_info [a.icao];
     state& s = plane_state [a.flight_number];
-    if (lookup_timeout > max_lookup_timeout) { // look web to find flight itinerary for flight number(see ./lookup)
-      static const int sz = 1024;
-      static char from [sz], to [sz], airline [sz], altitude [sz], status[sz];
+    static const int sz = 1024;
+    static char from [sz], to [sz], airline [sz], altitude [sz], status[sz];
+    string flightid (a.p->acident);
+    if (flightid.length() < 3) flightid = "unknown";
+    sprintf (altitude, "%05d", (int)s.alt);
+    sprintf (status, "%s %05d", s.stat.c_str(), (int)s.fcu_alt);
+    if (d.reg.length () < 3) {
+      d.reg = "unknown";
+      d.type = "unknown";
+      d.tries = lookup_timeout;
+    }
 
-      string flightid (a.p->acident);
-      if (flightid.length() < 3) flightid = "unknown";
+    string itinerary ("0");
+    if (++d.tries > lookup_timeout) {
+      cout << "new plane: " << flightid << endl;
+      itinerary = "1";
+      d.tries = 0;
+    } else itinerary = "0";
 
-      sprintf (altitude, "%05d", (int)s.alt);
-      sprintf (status, "%s %05d", s.stat.c_str(), (int)s.fcu_alt);
-      if (d.reg.length () < 3) {
-        d.reg = "unknown";
-        d.type = "unknown";
-        d.tries = info::MAX_TRIES;
-      }
-
-      string itinerary;
-      if (++d.tries >= info::MAX_TRIES) itinerary = "0"; else itinerary = "1";
-      if (s.last_delta_alt == 0) itinerary = "2";
-
+    if (((int)s.delta_alt != 0) || (itinerary == "1")) {
       string cmd("./lookup " + flightid + ' ' + a.icao + ' ' + d.reg + ' ' + d.type + ' ' + itinerary + ' ' + altitude + ' ' + status);
       system (cmd.c_str());
-      cout << "exec " << cmd << endl;
-
-      if (itinerary == "1") {
-        ifstream fout ("out");
-        fout.getline (from, sz, '\n');
-        fout.getline (to, sz, '\n');
-        fout.getline (airline, sz, '\n');
-        d.from = from;
-        d.to = to;
-        d.airline = airline;
-        system ("rm -f out");
-      }
-
     }
+
+    if (itinerary == "1") {
+      ifstream fout ("out");
+      fout.getline (from, sz, '\n');
+      fout.getline (to, sz, '\n');
+      fout.getline (airline, sz, '\n');
+      d.from = from;
+      d.to = to;
+      d.airline = airline;
+      system ("rm -f out");
+    }
+
+    //}
 
     if (show == "both" || show == s.stat || show == "level") {
       if (s.stat == "ascending to") printf ("\e[1;35m"); else if (s.stat == "descending to") printf ("\e[1;31m");
@@ -221,7 +221,7 @@ int p_ref (void)
     printf ("\e[0;30m");
   }
 
-  if (lookup_timeout > max_lookup_timeout) lookup_timeout = 0;
+  //if (lookup_timeout > max_lookup_timeout) lookup_timeout = 0;
 
 }
 
@@ -237,10 +237,8 @@ main(int argc, char** argv)
 
   if (argc == 3) {
     stringstream ss3; ss3 << argv[2];
-    ss3 >> max_lookup_timeout;
-  } else max_lookup_timeout = 60;
-
-  lookup_timeout = max_lookup_timeout + 1;
+    ss3 >> lookup_timeout;
+  } else lookup_timeout = 60;
 
   int n,k;
 
@@ -275,7 +273,6 @@ main(int argc, char** argv)
     printf ("%3s %8s %6s %6s %4s %5s %19s %s\n", "No:", "Flight  ", "ICAO  ", "Regn  ", "Type", "  Alt", "     State", "From -> To");
     p_ref();
     sleep(1);
-    ++lookup_timeout;
   }
 
 }
