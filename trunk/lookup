@@ -10,7 +10,7 @@ foreach {i j} {
   AFR {Air France} DLH Lufthansa IBE Iberia ELY {Israel Air} SHT {British Airways Shuttle} BMA {British Midland}
   TAM {TAM Brazilian} EZY EasyJet BCY CityJet ANZ {Air Newzealand} QFA Qantas SIA {Singapore Airlines} KAL {Korean Air}
   ACA {Air Canada} CTN {Croatia Airlines} AAL {American Airlines} UAL {United Airlines} COA {Continental Airlines} RYR {Ryan Air}
-  TOM {Thomson Airways} KLM {Royal Dutch Airlines} SAS {Scandinavian Airlines} TCX {Thomas Cook} DAL {Delta Airlines} IWD {Orbest Airlines}
+  TOM {Thomson Airways} KLM {Royal Dutch Airlines} SAS {Scandinavian Airlines} TCX {Thomas Cook Airlines} DAL {Delta Airlines} IWD {Orbest Airlines}
   AEE {Aegean Airlines} SLM {Surinam Airways} FIN {Fin Air} BMI {BMI Baby} TAP {Air Portugal} GMA {Gama Aviation} MOV {VIM Airlines}
   THY {Turkish Airlines} RZO {SATA International} TSC {Air Transat} SWR {Swiss Air} BEL {Brussels Airlines} MAU {Air Marutius}
   OMA {Oman Air} JAT {JAT Airways} KFR Kingfisher JAI {Jet Airways} CKS {Kalitta Air} IRA {Iran Air} EXS Jet2 AMC {Air Malta} MON {Monarch Airlines}
