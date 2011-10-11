@@ -36,9 +36,8 @@ foreach i {alt intent} {space20 $i}
   set fd [open out w]
 
   if {$iti eq "1"} {
-    puts "get itinerary"
-    set html [exec curl http://data.flight24.com/airplanes/$reg/ 2> err]
 
+    set html [exec curl http://data.flight24.com/airplanes/$reg/ --max-time 5 2> err]
     set start [string first {route from} $html]
     set html [string range $html $start end]
 
