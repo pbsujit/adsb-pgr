@@ -68,7 +68,7 @@ foreach i {alt intent} {space20 $i}
     space20 caller
 
     set poster "http://manurevah.com/lhr/flight_post.php?flight=$flightnum&icao=$icao&regn=$reg&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent"
-  } else {
+  } elseif {$iti eq "0"} {
     puts "partial posting"
     set poster "http://manurevah.com/lhr/flight_post.php?&icao=$icao&alt=$alt&intent=$intent"
   }
