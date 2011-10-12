@@ -15,14 +15,14 @@ foreach {i j} {
   TOM {Thomson Airways} KLM KLM SAS {Scandinavian Airlines} TCX {Thomas Cook Airlines} DAL {Delta Airlines} IWD {Orbest Airlines}
   AEE {Aegean Airlines} SLM {Surinam Airways} FIN Finnair BMI bmibaby TAP {Air Portugal} GMA {Gama Aviation} MOV {VIM Airlines}
   THY {Turkish Airlines} RZO {SATA International} TSC {Air Transat} SWR {Swiss Air} BEL {Brussels Airlines} MAU {Air Marutius}
-  OMA {Oman Air} JAT {JAT Airways} KFR Kingfisher JAI {Jet Airways} CKS {Kalitta Air} IRA {Iran Air} EXS Jet2 AMC {Air Malta} MON {Monarch Airlines}
+  OMA {Oman Air} JAT {JAT Airways} KFR {Kingfisher Airlines} JAI {Jet Airways} CKS {Kalitta Air} IRA {Iran Air} EXS Jet2 AMC {Air Malta} MON {Monarch Airlines}
   AEU {Astraeus Airlines} MAS {Malaysian Airlines} AFL Aeroflot AWE {US Airways} SVA {Saudi Arabian Airlines} ALK {Srilankan Airlines} CPA {Cathay Pacific}
   TSO {Transaero Airlines} AZA Alitalia ROT Tarom IB3 Iberia MEA {Middle Eastern Airlines} QTR {Qatar Airways} PIA {Pakistan International}
   ICE {Iceland Air} SAA {South African Airways} ETH Ethiopian ETD {Etihad Airways} CLX CargoLux CCA {Air China} AAR {Asiana Airlines} RBA {Royal Brunei Airlines}
   SEY {Air Seychelles} MSR {Egyptair} THA {Thai Airways} EVA {Eva Air} AUA {Austrian Airlines} NAX {Norweigian Air Shuttle} KAC {Kuwait Airways} CYP {Cyprus Air} TUA {Turkmenistan Airlines}
   SYR {Syrian Airlines} VLG {Vueling Airlines} CAL {China Airlines} TAR {Tunis Air} ANA {All Nippon Airways} KQA {Keynya Airways} LOT {LOT - Polish Airlines}
   WZZ {Wizz Air} DAH {Air Algerie} BBC {Biman Bangladesh} MNB {MNB Cargo Airlines} RAM {Royal Air Maroc} JAL {Japan Airlines} RJA {Royal Jordanian Airlines} FDX FedEx ARA {Arik Air}
-  ATN {Air Transport International} UA {United Airlines} CES {China Eastern Airlines} UZB {Uzbekistan Airways}
+  ATN {Air Transport International} UA {United Airlines} CES {China Eastern Airlines} UZB {Uzbekistan Airways} AHY {Azerbaijan Airlines} LZB {Bulgaria Air}
 } {set airline($i) $j}
 
 
