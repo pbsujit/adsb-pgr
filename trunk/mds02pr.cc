@@ -178,6 +178,7 @@ int p_ref (void)
     }
 
     if (((int)s.delta_alt != 0) || (get_from_to == "1")) {
+      ss.clear ();
       ss << a.lat << ' ' << a.lon;
       ss >> latitude >> longitude;
       string cmd("./lookup " + flightid + ' ' + a.icao + ' ' + d.reg + ' ' + d.type + ' ' + get_from_to + ' ' + latitude + ' ' + longitude + ' ' + altitude + ' ' + status);
