@@ -130,6 +130,7 @@ int p_ref (void)
   static const int UNKNOWN = -9999;
   static const int SIZE = 1024;
   static char from [SIZE], to [SIZE], airline [SIZE], altitude [SIZE], status[SIZE];
+  string latitude, longitude;
 
   while ((p = p_icao(1)) != NULL) {
     if (p->lat != UNKNOWN && p->lon != UNKNOWN && strlen (p->acident) > 3) {
@@ -155,6 +156,7 @@ int p_ref (void)
   sort (planes.begin(), planes.end(), closest ());
 
   // print
+  stringstream ss;
   for (int i = 0, j = planes.size (), k = 0; i < j; ++i) {
     aircraft& a = planes [i];
     info& d = plane_info [a.icao];
@@ -176,7 +178,9 @@ int p_ref (void)
     }
 
     if (((int)s.delta_alt != 0) || (get_from_to == "1")) {
-      string cmd("./lookup " + flightid + ' ' + a.icao + ' ' + d.reg + ' ' + d.type + ' ' + get_from_to + ' ' + altitude + ' ' + status);
+      ss << a.lat << ' ' << a.lon;
+      ss >> latitude >> longitude;
+      string cmd("./lookup " + flightid + ' ' + a.icao + ' ' + d.reg + ' ' + d.type + ' ' + get_from_to + ' ' + latitude + ' ' + longitude + ' ' + altitude + ' ' + status);
       system (cmd.c_str());
       if (get_from_to == "1") {
         ifstream fout ("out");
