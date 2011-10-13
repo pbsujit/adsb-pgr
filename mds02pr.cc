@@ -42,36 +42,17 @@ using namespace std;
 #include "mds02.h"      /* description of structures
            * and more */
 
-char t_string[5];     /* time string */
-
 struct Misc *p_mi;      /* pointer to 'Misc' structure in
            * shared memory */
 
 int lookup_timeout = 60;
-
-/* ------------------------------------------------------------------------
- * make time string MM:SS 'tstr' from unix time
- * ------------------------------------------------------------------------ */
-void mktstr(time_t t, char *tstr)
-{
-
-   struct tm *syst;
-
-   syst = gmtime(&t);     /* unix calendar time to
-           *   broken down time */
-   sprintf(tstr,"%.2d:%.2d",
-    syst->tm_min, syst->tm_sec);
-}
-
-
-static const int UNKNOWN = -9999;
 
 struct aircraft {
 
   Plane* p; // from shared memory
 
   unsigned int hex; // 24-bit aircraft address assigned by ICAO
-  string icao; // hex -> icao string
+  string icao; // hex -> icao; as string
   string flight_number;
 
   double lat, lon, height; // plane position
@@ -103,9 +84,8 @@ struct state {
   string stat; // ascending, descending or level
   double alt; // current altitude in feet
   double last_alt; // last altitude
+  double delta_alt; // alt - last_alt
   double fcu_alt; // intended altitude
-  double delta_alt; // delta alt
-
 
   state () : stat ("unknown") {
     alt = last_alt = fcu_alt = 0;
@@ -116,13 +96,14 @@ struct state {
 
 struct info { // from web lookup
 
-  string reg; // registration number
+  string reg; // registration ie tail number
   string airline;
   string type;
   string from;
   string to;
-  int tries; // num times to lookup web b4 giving up
-  info () : reg("unknown"), airline("unknown"), type("unknown"), from("unknown"), to("unknown"), tries(lookup_timeout) {}
+
+  int lookup;
+  info () : reg("unknown"), airline("unknown"), type("unknown"), from("unknown"), to("unknown"), lookup (lookup_timeout) {}
 
 };
 
@@ -136,37 +117,38 @@ string show ("both");
 
 int p_ref (void)
 {
-   struct Plane *p;     /* pointer to structures with data */
-   struct Plane *p0;      /* pointer to empty structure */
+  struct Plane *p;     /* pointer to structures with data */
+  struct Plane *p0;      /* pointer to empty structure */
 
-   int n = 0;
+  int n = 0;
 
-/* fetching data from shared memory using routines from 'shmsub02' */
+  /* fetching data from shared memory using routines from 'shmsub02' */
 
-   p0 = p_icao(0);      /* p0 points to empty structure */
+  p0 = p_icao(0);      /* p0 points to empty structure */
 
-   vector<aircraft> planes;
-   while ((p = p_icao(1)) != NULL) {
+  vector<aircraft> planes;
+  static const int UNKNOWN = -9999;
+  static const int SIZE = 1024;
+  static char from [SIZE], to [SIZE], airline [SIZE], altitude [SIZE], status[SIZE];
+
+  while ((p = p_icao(1)) != NULL) {
     if (p->lat != UNKNOWN && p->lon != UNKNOWN && strlen (p->acident) > 3) {
-     planes.push_back (aircraft (p));
-     aircraft& plane = planes [planes.size() - 1];
-     state& ps = plane_state [plane.flight_number];
-     if (ps.stat == "unknown") {
-      ps.stat = "level at ";
-      ps.last_alt = ps.alt = ps.fcu_alt = p->alt;
-     } else {
+      planes.push_back (aircraft (p));
+      aircraft& plane = planes [planes.size() - 1];
+      state& ps = plane_state [plane.flight_number];
+      if (ps.stat == "unknown") {
+        ps.stat = "level at ";
+        ps.last_alt = ps.alt = ps.fcu_alt = p->alt;
+      } else {
         ps.alt = p->alt;
-        ps.delta_alt = (int)(ps.alt - ps.last_alt);
-        if (ps.delta_alt > 0) ps.stat = "ascending to"; else if (ps.delta_alt < 0) ps.stat = "descending to";
+        ps.delta_alt = ps.alt - ps.last_alt;
+        if (ps.delta_alt > 0) ps.stat = "ascending to"; else if (ps.delta_alt < 0) ps.stat = "descending to"; else ps.stat = "level at";
         ps.last_alt = ps.alt;
-     }
-
-     // round fcu_alt to nearest 10
-     ps.fcu_alt = p->bds.fcu_alt_40 - (int) p->bds.fcu_alt_40 % 10;
-     if (ps.fcu_alt < 0) ps.fcu_alt = 0;
-
-   }
-
+      }
+      // round fcu_alt to nearest 10
+      ps.fcu_alt = p->bds.fcu_alt_40 - (int) p->bds.fcu_alt_40 % 10;
+      if (ps.fcu_alt < 0) ps.fcu_alt = 0;
+    }
   }
 
   // sort planes closest to observer
@@ -177,42 +159,36 @@ int p_ref (void)
     aircraft& a = planes [i];
     info& d = plane_info [a.icao];
     state& s = plane_state [a.flight_number];
-    static const int sz = 1024;
-    static char from [sz], to [sz], airline [sz], altitude [sz], status[sz];
     string flightid (a.p->acident);
     if (flightid.length() < 3) flightid = "unknown";
-    sprintf (altitude, "%05d", (int)s.alt);
-    sprintf (status, "%s %05d", s.stat.c_str(), (int)s.fcu_alt);
+    sprintf (altitude, "%05d", (int) s.alt);
+    sprintf (status, "%s %05d", s.stat.c_str(), (int) s.fcu_alt);
     if (d.reg.length () < 3) {
       d.reg = "unknown";
       d.type = "unknown";
-      d.tries = lookup_timeout;
+      d.lookup = lookup_timeout;
     }
 
-    string itinerary ("0");
-    if (++d.tries > lookup_timeout) {
-      cout << "new plane: " << flightid << endl;
-      itinerary = "1";
-      d.tries = 0;
-    } else itinerary = "0";
+    string get_from_to ("0");
+    if (++d.lookup > lookup_timeout) {
+      get_from_to = "1";
+      d.lookup = 0;
+    }
 
-    if (((int)s.delta_alt != 0) || (itinerary == "1")) {
-      string cmd("./lookup " + flightid + ' ' + a.icao + ' ' + d.reg + ' ' + d.type + ' ' + itinerary + ' ' + altitude + ' ' + status);
+    if (((int)s.delta_alt != 0) || (get_from_to == "1")) {
+      string cmd("./lookup " + flightid + ' ' + a.icao + ' ' + d.reg + ' ' + d.type + ' ' + get_from_to + ' ' + altitude + ' ' + status);
       system (cmd.c_str());
+      if (get_from_to == "1") {
+        ifstream fout ("out");
+        fout.getline (from, SIZE, '\n');
+        fout.getline (to, SIZE, '\n');
+        fout.getline (airline, SIZE, '\n');
+        d.from = from;
+        d.to = to;
+        d.airline = airline;
+        system ("rm -f out");
+      }
     }
-
-    if (itinerary == "1") {
-      ifstream fout ("out");
-      fout.getline (from, sz, '\n');
-      fout.getline (to, sz, '\n');
-      fout.getline (airline, sz, '\n');
-      d.from = from;
-      d.to = to;
-      d.airline = airline;
-      system ("rm -f out");
-    }
-
-    //}
 
     if (show == "both" || show == s.stat || show == "level") {
       if (s.stat == "ascending to") printf ("\e[1;35m"); else if (s.stat == "descending to") printf ("\e[1;31m");
@@ -221,12 +197,8 @@ int p_ref (void)
     printf ("\e[0;30m");
   }
 
-  //if (lookup_timeout > max_lookup_timeout) lookup_timeout = 0;
-
 }
 
-/* ------------------------------------------------------------------------
- * ------------------------------------------------------------------------ */
 main(int argc, char** argv)
 {
   if (argc < 2) {
