@@ -1,7 +1,5 @@
 #!/usr/bin/tclsh
 
-puts "looking up"
-
 proc space20 {w} {
   upvar $w v
   set v [string map {{ } %20} $v]
@@ -14,14 +12,14 @@ foreach {i j} {
   ACA {Air Canada} CTN {Croatia Airlines} AAL {American Airlines} UAL {United Airlines} COA {Continental Airlines} RYR {Ryanair}
   TOM {Thomson Airways} KLM KLM SAS {Scandinavian Airlines} TCX {Thomas Cook Airlines} DAL {Delta Airlines} IWD {Orbest Airlines}
   AEE {Aegean Airlines} SLM {Surinam Airways} FIN Finnair BMI bmibaby TAP {Air Portugal} GMA {Gama Aviation} MOV {VIM Airlines}
-  THY {Turkish Airlines} RZO {SATA International} TSC {Air Transat} SWR {Swiss Air} BEL {Brussels Airlines} MAU {Air Marutius}
+  THY {Turkish Airlines} RZO {SATA International} TSC {Air Transat} SWR Swissair BEL {Brussels Airlines} MAU {Air Marutius}
   OMA {Oman Air} JAT {JAT Airways} KFR {Kingfisher Airlines} JAI {Jet Airways} CKS {Kalitta Air} IRA {Iran Air} EXS Jet2 AMC {Air Malta} MON {Monarch Airlines}
   AEU {Astraeus Airlines} MAS {Malaysian Airlines} AFL Aeroflot AWE {US Airways} SVA {Saudi Arabian Airlines} ALK {Srilankan Airlines} CPA {Cathay Pacific}
   TSO {Transaero Airlines} AZA Alitalia ROT Tarom IB3 Iberia MEA {Middle Eastern Airlines} QTR {Qatar Airways} PIA {Pakistan International}
   ICE {Iceland Air} SAA {South African Airways} ETH Ethiopian ETD {Etihad Airways} CLX CargoLux CCA {Air China} AAR {Asiana Airlines} RBA {Royal Brunei Airlines}
   SEY {Air Seychelles} MSR {Egyptair} THA {Thai Airways} EVA {Eva Air} AUA {Austrian Airlines} NAX {Norweigian Air Shuttle} KAC {Kuwait Airways} CYP {Cyprus Air} TUA {Turkmenistan Airlines}
   SYR {Syrian Airlines} VLG {Vueling Airlines} CAL {China Airlines} TAR {Tunis Air} ANA {All Nippon Airways} KQA {Keynya Airways} LOT {LOT - Polish Airlines}
-  WZZ {Wizz Air} DAH {Air Algerie} BBC {Biman Bangladesh} MNB {MNB Cargo Airlines} RAM {Royal Air Maroc} JAL {Japan Airlines} RJA {Royal Jordanian Airlines} FDX FedEx ARA {Arik Air}
+  WZZ {Wizz Air} DAH {Air Algerie} BBC {Biman Bangladesh} MNG {MNG Cargo} RAM {Royal Air Maroc} JAL {Japan Airlines} RJA {Royal Jordanian Airlines} FDX FedEx ARA {Arik Air}
   ATN {Air Transport International} UA {United Airlines} CES {China Eastern Airlines} UZB {Uzbekistan Airways} AHY {Azerbaijan Airlines} LZB {Bulgaria Air} UPS {United Parcel Services}
 } {set airline($i) $j}
 
@@ -30,15 +28,17 @@ set flightnum [lindex $argv 0]
 set icao [lindex $argv 1]
 set reg [string trim [lindex $argv 2]]
 set type [lindex $argv 3]
-set iti [lindex $argv 4]
-set alt "[lindex $argv 5] ft"
-set intent "[lrange $argv 6 8] ft"
+set itinerary [lindex $argv 4]
+set lat [lindex $argv 5]
+set lon [lindex $argv 6]
+set alt "[lindex $argv 7] ft"
+set intent "[lrange $argv 8 10] ft"
 
 foreach i {alt intent} {space20 $i}
 
   set fd [open out w]
 
-  if {$iti eq "1"} {
+  if {$itinerary eq 1} {
 
     set html [exec curl http://data.flight24.com/airplanes/$reg/ --connect-timeout 10 2> err]
 
@@ -71,11 +71,10 @@ foreach i {alt intent} {space20 $i}
     space20 to
     space20 caller
 
-    set poster "http://manurevah.com/lhr/flight_post.php?flight=$flightnum&icao=$icao&regn=$reg&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent"
-  } elseif {$iti eq "0"} {
-    set poster "http://manurevah.com/lhr/flight_post.php?&icao=$icao&alt=$alt&intent=$intent"
-  } else {puts "no lookup"; return}
+    set poster "http://manurevah.com/lhr/flight_post.php?icao=$icao&flight=$flightnum&regn=$reg&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent&lat=$lat&lon=$lon"
+
+  } else {
+    set poster "http://manurevah.com/lhr/flight_post.php?&icao=$icao&alt=$alt&intent=$intent&lat=$lat&lon=$lon"
+  }
 
   exec curl $poster >& err &
-
-  puts "lookup complete"
