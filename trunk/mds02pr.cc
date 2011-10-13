@@ -86,9 +86,13 @@ struct state {
   double last_alt; // last altitude
   double delta_alt; // alt - last_alt
   double fcu_alt; // intended altitude
+  double lat, last_lat, lon, last_lon;
+  double delta_lat, delta_lon;
 
   state () : stat ("unknown") {
     alt = last_alt = fcu_alt = 0;
+    lat = last_lat = lon = last_lon = 0;
+    delta_lat = delta_lon = 0;
     delta_alt = 0;
   }
 
@@ -140,11 +144,20 @@ int p_ref (void)
       if (ps.stat == "unknown") {
         ps.stat = "level at ";
         ps.last_alt = ps.alt = ps.fcu_alt = p->alt;
+        ps.last_lat = ps.lat = p->lat;
+        ps.last_lon = ps.lon = p->lon;
+
       } else {
         ps.alt = p->alt;
+        ps.lat = p->lat;
+        ps.lon = p->lon;
+        ps.delta_lat = ps.lat - ps.last_lat;
+        ps.delta_lon = ps.lon - ps.last_lon;
         ps.delta_alt = ps.alt - ps.last_alt;
         if (ps.delta_alt > 0) ps.stat = "ascending to"; else if (ps.delta_alt < 0) ps.stat = "descending to"; else ps.stat = "level at";
         ps.last_alt = ps.alt;
+        ps.last_lat = ps.lat;
+        ps.last_lon = ps.lon;
       }
       // round fcu_alt to nearest 10
       ps.fcu_alt = p->bds.fcu_alt_40 - (int) p->bds.fcu_alt_40 % 10;
@@ -177,7 +190,7 @@ int p_ref (void)
       d.lookup = 0;
     }
 
-    if (((int)s.delta_alt != 0) || (get_from_to == "1")) {
+    if (((int)s.delta_alt != 0) || (get_from_to == "1") || (s.delta_lat != 0) || (s.delta_lon != 0)) {
       ss.clear ();
       ss << a.lat << ' ' << a.lon;
       ss >> latitude >> longitude;
