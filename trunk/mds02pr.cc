@@ -166,7 +166,7 @@ int p_ref (void)
   }
 
   // sort planes closest to observer
-  sort (planes.begin(), planes.end(), closest ());
+  // sort (planes.begin(), planes.end(), closest ());
 
   // print
   stringstream ss;
@@ -184,9 +184,10 @@ int p_ref (void)
       d.lookup = lookup_timeout;
     }
 
-    string get_from_to ("0");
+    string get_from_to ("0"), bg;
     if (++d.lookup > lookup_timeout) {
       get_from_to = "1";
+      bg = " &";
       d.lookup = 0;
     }
 
@@ -194,7 +195,7 @@ int p_ref (void)
       ss.clear ();
       ss << a.lat << ' ' << a.lon;
       ss >> latitude >> longitude;
-      string cmd("./lookup " + flightid + ' ' + a.icao + ' ' + d.reg + ' ' + d.type + ' ' + get_from_to + ' ' + latitude + ' ' + longitude + ' ' + altitude + ' ' + status);
+      string cmd("./lookup " + flightid + ' ' + a.icao + ' ' + d.reg + ' ' + d.type + ' ' + get_from_to + ' ' + latitude + ' ' + longitude + ' ' + altitude + ' ' + status + bg);
       system (cmd.c_str());
       if (get_from_to == "1") {
         ifstream fout ("out");
