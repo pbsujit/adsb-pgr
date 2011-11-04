@@ -1,14 +1,6 @@
 #labels Featured
-screenshots @ ~14:30 September 22, 2011:
+live feed from adsb-pgr uploaded to:  
 
-blue = ascending & red = descending aircraft
+http://manurevah.com/lhr/
 
-http://adsb-pgr.googlecode.com/svn/trunk/1.png
-
-only descending aircraft
-
-http://adsb-pgr.googlecode.com/svn/trunk/2.png
-
-only ascending aircraft
-
-http://adsb-pgr.googlecode.com/svn/trunk/3.png
+24-bit aircraft ICAO transformed to 24-bit web color for an ever changing kaleidoscope of aircraft movements.
