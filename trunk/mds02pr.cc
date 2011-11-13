@@ -133,7 +133,7 @@ int p_ref (void)
   vector<aircraft> planes;
   static const int UNKNOWN = -9999;
   static const int SIZE = 1024;
-  static char from [SIZE], to [SIZE], airline [SIZE], altitude [SIZE], status[SIZE];
+  static char from [SIZE], to [SIZE], airline [SIZE], altitude [SIZE], intent[SIZE], status[SIZE];
   string latitude, longitude;
 
   while ((p = p_icao(1)) != NULL) {
@@ -177,7 +177,8 @@ int p_ref (void)
     string flightid (a.p->acident);
     if (flightid.length() < 3) flightid = "unknown";
     sprintf (altitude, "%05d", (int) s.alt);
-    sprintf (status, "%s %05d", s.stat.c_str(), (int) s.fcu_alt);
+    sprintf (intent, "%05d", (int) s.fcu_alt);
+    sprintf (status, "%s", s.stat.c_str());
     if (d.reg.length () < 3) {
       d.reg = "unknown";
       d.type = "unknown";
@@ -195,7 +196,7 @@ int p_ref (void)
       ss.clear ();
       ss << a.lat << ' ' << a.lon;
       ss >> latitude >> longitude;
-      string cmd("./lookup " + flightid + ' ' + a.icao + ' ' + d.reg + ' ' + d.type + ' ' + get_from_to + ' ' + latitude + ' ' + longitude + ' ' + altitude + ' ' + status + bg);
+      string cmd("./lookup " + flightid + ' ' + a.icao + ' ' + d.reg + ' ' + d.type + ' ' + get_from_to + ' ' + latitude + ' ' + longitude + ' ' + altitude + ' ' + intent + ' ' + status + bg);
       system (cmd.c_str());
       if (get_from_to == "1") {
         ifstream fout ("out");
