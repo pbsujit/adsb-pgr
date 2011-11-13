@@ -32,8 +32,9 @@ set type [lindex $argv 3]
 set itinerary [lindex $argv 4]
 set lat [lindex $argv 5]
 set lon [lindex $argv 6]
-set alt "[lindex $argv 7] ft"
-set intent "[lrange $argv 8 10] ft"
+set alt [lindex $argv 7]
+set intent [lindex $argv 8]
+set status [lindex $argv 9]
 
 foreach i {alt intent} {space20 $i}
 
@@ -72,10 +73,10 @@ foreach i {alt intent} {space20 $i}
     space20 to
     space20 caller
 
-    set poster "http://manurevah.com/lhr/flight_post.php?icao=$icao&flight=$flightnum&regn=$reg&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent&lat=$lat&lon=$lon"
+    set poster "http://manurevah.com/lhr/flight_post.php?icao=$icao&flight=$flightnum&regn=$reg&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon"
 
   } else {
-    set poster "http://manurevah.com/lhr/flight_post.php?&icao=$icao&alt=$alt&intent=$intent&lat=$lat&lon=$lon"
+    set poster "http://manurevah.com/lhr/flight_post.php?&icao=$icao&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon"
   }
 
   exec curl $poster >& err &
