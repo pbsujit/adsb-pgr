@@ -56,7 +56,12 @@ foreach i {alt intent} {space20 $i}
       incr end -1
       set result [string trim [string range $html 0 $end]]
       puts $fd $result
-      set $i $result
+
+      set code_start [string first > $html]
+      set code_end [string first < $html]
+      set code [string trim [string range $html [incr code_start] [incr code_end -1]]]
+      set $i "$result-$code"
+      puts $i+$code
     }
 
     set flight [string range [lindex $argv 0] 0 2]
