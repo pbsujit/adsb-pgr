@@ -49,19 +49,37 @@ foreach i {alt intent} {space20 $i}
 
     foreach i {from to} {
       set needle title="
+      set len [string length $needle]
+
       set start [string first $needle $html]
-      incr start [string length $needle]
+      incr start $len
+
       set html [string range $html $start end]
       set end [string first {"} $html]
       incr end -1
-      set result [string trim [string range $html 0 $end]]
-      puts $fd $result
+      #set result [string trim [string range $html 0 $end]]
+      #puts $fd $result
 
       set code_start [string first > $html]
       set code_end [string first < $html]
       set code [string trim [string range $html [incr code_start] [incr code_end -1]]]
-      set $i "$result-$code"
-      puts $i+$code
+
+      set wiki [exec curl http://en.wikipedia.org/wiki/List_of_airports_by_IATA_code:_[string index $code 0] --connect-timeout 10 2> err]
+      set start [string first $code $wiki]
+      set wiki [string range $wiki $start end]
+      set start [string first $needle $wiki]
+      incr start $len
+      set wiki [string range $wiki $start end]
+      set end [string first {"} $wiki]
+      incr end -1
+      set result [string trim [string range $wiki 0 $end]]
+      #set end [string first Airport $result]
+      #incr end -1
+      #set $i [string range $result 0 $end]
+      set $i $result
+      puts $fd $result
+      puts $result
+
     }
 
     set flight [string range [lindex $argv 0] 0 2]
