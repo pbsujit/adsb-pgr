@@ -59,7 +59,7 @@ if {$itinerary eq 1} {
 
     set code_start [string first > $html]
     set code_end [string first < $html]
-    set code [string trim [string range $html [incr code_start] [incr code_end -1]]]
+    set code [string trimleft [string range $html [incr code_start] [incr code_end -1]]]
     puts "$code, len = [string length $code]"
 
     set wiki [exec curl http://en.wikipedia.org/wiki/List_of_airports_by_IATA_code:_[string index $code 0] --connect-timeout 10 2> err]
