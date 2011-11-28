@@ -38,64 +38,67 @@ set status [lindex $argv 9]
 
 foreach i {alt intent} {space20 $i}
 
-  set fd [open out w]
+set fd [open out w]
 
-  if {$itinerary eq 1} {
+if {$itinerary eq 1} {
 
-    set html [exec curl http://data.flight24.com/airplanes/$reg/ --connect-timeout 10 2> err]
+  set html [exec curl http://data.flight24.com/airplanes/$reg/ --connect-timeout 10 2> err]
 
-    set start [string first {route from} $html]
+  set start [string first {route from} $html]
+  set html [string range $html $start end]
+
+  foreach i {from to} {
+
+    set needle title="
+    set len [string length $needle]
+
+    set start [string first $needle $html]
+    incr start $len
+
     set html [string range $html $start end]
 
-    foreach i {from to} {
-      set needle title="
-      set len [string length $needle]
+    set code_start [string first > $html]
+    set code_end [string first < $html]
+    set code [string trim [string range $html [incr code_start] [incr code_end -1]]]
 
-      set start [string first $needle $html]
-      incr start $len
+    set wiki [exec curl http://en.wikipedia.org/wiki/List_of_airports_by_IATA_code:_[string index $code 0] --connect-timeout 10 2> err]
+    set start [string first >$code $wiki]
+    set wiki [string range $wiki $start end]
+    set start [string first $needle $wiki]
+    incr start $len
 
-      set html [string range $html $start end]
+    set wiki [string range $wiki $start end]
+    set end [string first {"} $wiki]
+    incr end -1
 
-      set code_start [string first > $html]
-      set code_end [string first < $html]
-      set code [string trim [string range $html [incr code_start] [incr code_end -1]]]
-      puts "flight number = $flightnum, airport_$i = $code"
+    set airport_name [string trim [string range $wiki 0 $end]]
 
-      set wiki [exec curl http://en.wikipedia.org/wiki/List_of_airports_by_IATA_code:_[string index $code 0] --connect-timeout 10 2> err]
-      set start [string first >$code $wiki]
-      set wiki [string range $wiki $start end]
-      set start [string first $needle $wiki]
-      incr start $len
-      set wiki [string range $wiki $start end]
-      set end [string first {"} $wiki]
-      incr end -1
-      set result [string trim [string range $wiki 0 $end]]
+    set end [string first { Airport} $airport_name]
+    incr end -1
 
-      set end [string first { Airport} $result]
-      incr end -1
-      set $i [string range $result 0 $end]
-      puts "$flightnum [set $i]"
+    set $i [string range $airport_name 0 $end]
+    puts "$flightnum [set $i]"
 
-    }
-
-    set flight [string range [lindex $argv 0] 0 2]
-    if { [array names airline -exact $flight] ne "" } {
-      set caller $airline($flight)
-    } else {
-      set caller unknown
-    }
-
-    puts $fd $caller
-    close $fd
-
-    space20 from
-    space20 to
-    space20 caller
-
-    set poster "http://manurevah.com/lhr/flight_post.php?icao=$icao&flight=$flightnum&regn=$reg&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon"
-
-  } else {
-    set poster "http://manurevah.com/lhr/flight_post.php?&icao=$icao&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon"
   }
 
-  exec curl $poster >& err &
+  set flight [string range [lindex $argv 0] 0 2]
+  if { [array names airline -exact $flight] ne "" } {
+    set caller $airline($flight)
+  } else {
+    set caller unknown
+  }
+
+  puts $fd $caller
+  close $fd
+
+  space20 from
+  space20 to
+  space20 caller
+
+  set poster "http://manurevah.com/lhr/flight_post.php?icao=$icao&flight=$flightnum&regn=$reg&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon"
+
+} else {
+  set poster "http://manurevah.com/lhr/flight_post.php?&icao=$icao&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon"
+}
+
+exec curl $poster >& err &
