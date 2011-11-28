@@ -79,8 +79,8 @@ if {$itinerary eq 1} {
     set airport_name [string trim [string range $wiki 0 $end]]
     set airport_name [string map {_ { }} $airport_name]
 
-    set first [string first { Airport} $airport_name]
-    set end [expr $first + [string length { Airport}] - 1]
+    set first [string first Airport $airport_name]
+    set end [expr $first + [string length Airport] - 1]
 
     set airport_name [string replace $airport_name $first $end {}]
 
