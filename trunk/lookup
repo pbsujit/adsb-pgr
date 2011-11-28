@@ -65,6 +65,10 @@ if {$itinerary eq 1} {
     set wiki [exec curl http://en.wikipedia.org/wiki/List_of_airports_by_IATA_code:_[string index $code 0] --connect-timeout 10 2> err]
     set start [string first >$code $wiki]
     set wiki [string range $wiki $start end]
+
+    set needle /wiki/
+    set len [string length $needle]
+
     set start [string first $needle $wiki]
     incr start $len
 
@@ -73,6 +77,7 @@ if {$itinerary eq 1} {
     incr end -1
 
     set airport_name [string trim [string range $wiki 0 $end]]
+    set airport_name [string map {_ { }} $airport_name]
 
     set end [string first { Airport} $airport_name]
     incr end -1
