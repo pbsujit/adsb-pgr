@@ -80,12 +80,12 @@ if {$itinerary eq 1} {
     set airport_name [string map {_ { }} $airport_name]
 
     set first [string first Airport $airport_name]
-    set end [expr $first + [string length Airport] - 1]
-
-    set airport_name [string replace $airport_name $first $end {}]
+    if {$first ne "-1"} {
+      set end [expr $first + [string length Airport] - 1]
+      set airport_name [string replace $airport_name $first $end {}]
+    }
 
     set $i $airport_name
-
     puts "$flightnum [set $i]"
 
   }
