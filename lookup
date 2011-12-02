@@ -21,7 +21,7 @@ foreach {i j} {
   SYR {Syrian Airlines} VLG {Vueling Airlines} CAL {China Airlines} TAR {Tunis Air} ANA {All Nippon Airways} KQA {Keynya Airways} LOT {LOT - Polish Airlines}
   WZZ {Wizz Air} DAH {Air Algerie} BBC {Biman Bangladesh} MNG {MNG Cargo} RAM {Royal Air Maroc} JAL {Japan Airlines} RJA {Royal Jordanian Airlines} FDX FedEx ARA {Arik Air}
   ATN {Air Transport International} UA {United Airlines} CES {China Eastern Airlines} UZB {Uzbekistan Airways} AHY {Azerbaijan Airlines} LZB {Bulgaria Air} UPS {United Parcel Services}
-  QAF {Qatar Amiri Flight} OAW {Helvetic Airways} VKG {Thomas Cook Airlines}
+  QAF {Qatar Amiri Flight} OAW {Helvetic Airways} VKG {Thomas Cook Airlines} BLX {TUIFly Nordic}
 } {set airline($i) $j}
 
 
