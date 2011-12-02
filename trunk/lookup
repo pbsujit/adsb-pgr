@@ -104,10 +104,13 @@ if {$itinerary eq 1} {
   space20 to
   space20 caller
 
-  set poster "http://manurevah.com/lhr/flight_post.php?icao=$icao&flight=$flightnum&regn=$reg&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon"
+  set poster1 "http://manurevah.com/lhr/flight_post.php?icao=$icao&flight=$flightnum&regn=$reg&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon"
+  set poster2 "http://jagernot.com/atc/flight_post.php?icao=$icao&flight=$flightnum&regn=$reg&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon"
 
 } else {
-  set poster "http://manurevah.com/lhr/flight_post.php?&icao=$icao&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon"
+  set poster1 "http://manurevah.com/lhr/flight_post.php?&icao=$icao&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon"
+  set poster2 "http://jagernot.com/lhr/flight_post.php?&icao=$icao&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon"
 }
 
-exec curl $poster >& err &
+exec curl $poster1 >& err &
+exec curl $poster2 >& err &
