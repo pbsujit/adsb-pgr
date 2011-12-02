@@ -26,6 +26,7 @@ foreach {i j} {
 
 
 set flightnum [lindex $argv 0]
+
 set icao [lindex $argv 1]
 set reg [string trim [lindex $argv 2]]
 set type [lindex $argv 3]
@@ -105,6 +106,10 @@ if {$itinerary eq 1} {
   space20 from
   space20 to
   space20 caller
+
+  set flightnum "[string range 0 2 $flightnum] [string range 3 end $flightnum]
+  spacer flightnum
+
 
   set poster1 "http://manurevah.com/lhr/flight_post.php?icao=$icao&flight=$flightnum&regn=$reg&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon"
   set poster2 "http://jagernot.com/lhr/flight_post.php?icao=$icao&flight=$flightnum&regn=$reg&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon"
