@@ -35,7 +35,7 @@ set lon [lindex $argv 6]
 set alt [lindex $argv 7]
 set intent [lindex $argv 8]
 set status [lindex $argv 9]
-set heading [lindex $argv 10]
+set heading [lindex $argv 12]
 
 foreach i {alt intent} {space20 $i}
 
