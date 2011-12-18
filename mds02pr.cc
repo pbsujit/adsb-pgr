@@ -196,7 +196,11 @@ int p_ref (void)
       ss.clear ();
       ss << a.lat << ' ' << a.lon;
       ss >> latitude >> longitude;
-      string cmd("./lookup " + flightid + ' ' + a.icao + ' ' + d.reg + ' ' + d.type + ' ' + get_from_to + ' ' + latitude + ' ' + longitude + ' ' + altitude + ' ' + intent + ' ' + status + bg);
+
+      ss.clear ();
+      ss << a.p->bds.hdg_60;
+      string heading; ss >> heading;
+      string cmd("./lookup " + flightid + ' ' + a.icao + ' ' + d.reg + ' ' + d.type + ' ' + get_from_to + ' ' + latitude + ' ' + longitude + ' ' + altitude + ' ' + intent + ' ' + status + ' ' + heading + bg);
       system (cmd.c_str());
       if (get_from_to == "1") {
         ifstream fout ("out");
