@@ -35,6 +35,7 @@ set lon [lindex $argv 6]
 set alt [lindex $argv 7]
 set intent [lindex $argv 8]
 set status [lindex $argv 9]
+set heading [lindex $argv 10]
 
 foreach i {alt intent} {space20 $i}
 
@@ -61,7 +62,7 @@ if {$itinerary eq 1} {
     set code_end [string first < $html]
     set code [string trimleft [string range $html [incr code_start] [incr code_end -1]]]
     puts "$code, len = [string length $code]"
-  	set $i_iata $code
+    set [set i]_iata $code
 
     set wiki [exec curl http://en.wikipedia.org/wiki/List_of_airports_by_IATA_code:_[string index $code 0] --connect-timeout 10 2> err]
     set start [string first >$code $wiki]
@@ -80,13 +81,13 @@ if {$itinerary eq 1} {
     set airport_name [string trim [string range $wiki 0 $end]]
     set airport_name [string map {_ { }} $airport_name]
 
-	set first [string first { Airport} $airport_name]
-    	if {$first ne "-1"} {
-      		set end [expr $first + [string length { Airport}] - 1]
-		if {$end eq [expr [string length $airport_name] - 1]} {
-      			set airport_name [string replace $airport_name $first $end {}]
-		}
-    	}
+  set first [string first { Airport} $airport_name]
+      if {$first ne "-1"} {
+          set end [expr $first + [string length { Airport}] - 1]
+    if {$end eq [expr [string length $airport_name] - 1]} {
+            set airport_name [string replace $airport_name $first $end {}]
+    }
+      }
 
     set $i $airport_name
     puts "$flightnum [set $i]"
@@ -107,12 +108,12 @@ if {$itinerary eq 1} {
   space20 to
   space20 caller
 
-  set poster1 "http://manurevah.com/lhr/flight_post.php?icao=$icao&flight=$flightnum&regn=$reg&from_iata=$from_iata&to_iata=$to_iata&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon"
-  set poster2 "http://jagernot.com/lhr/flight_post.php?icao=$icao&flight=$flightnum&regn=$reg&&from_iata=$from_iata&to_iata=$to_iata&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon"
+  set poster1 "http://manurevah.com/lhr/flight_post.php?icao=$icao&flight=$flightnum&regn=$reg&from_iata=$from_iata&to_iata=$to_iata&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon&hdg=$heading"
+  set poster2 "http://jagernot.com/lhr/flight_post.php?icao=$icao&flight=$flightnum&regn=$reg&&from_iata=$from_iata&to_iata=$to_iata&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon&hdg=$heading"
 
 } else {
-  set poster1 "http://manurevah.com/lhr/flight_post.php?&icao=$icao&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon"
-  set poster2 "http://jagernot.com/lhr/flight_post.php?&icao=$icao&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon"
+  set poster1 "http://manurevah.com/lhr/flight_post.php?&icao=$icao&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon&hdg=$heading"
+  set poster2 "http://jagernot.com/lhr/flight_post.php?&icao=$icao&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon&hdg=$heading"
 }
 
 exec curl $poster1 >& err &
