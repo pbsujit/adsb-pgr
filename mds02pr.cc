@@ -200,7 +200,7 @@ int p_ref (void)
       ss.clear ();
       ss << a.p->bds.hdg_60;
       string heading; ss >> heading;
-      cout << "heading = " << heading << endl;
+      cout << "heading = " << heading << ' ' << a.p->bds.hdg_60 << endl;
       string cmd("./lookup " + flightid + ' ' + a.icao + ' ' + d.reg + ' ' + d.type + ' ' + get_from_to + ' ' + latitude + ' ' + longitude + ' ' + altitude + ' ' + intent + ' ' + heading + ' ' + status + bg);
       system (cmd.c_str());
       if (get_from_to == "1") {
