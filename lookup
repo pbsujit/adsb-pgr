@@ -1,6 +1,5 @@
 #!/usr/bin/tclsh
 
-#
 proc space20 {w} {
   upvar $w v
   set v [string map {{ } %20} $v]
@@ -80,7 +79,8 @@ if {$itinerary eq 1} {
     incr end -1
 
     set airport_name [string trim [string range $wiki 0 $end]]
-    set link_name $airport_name
+    set [set i]_link $airport_name
+
 
     set airport_name [string map {_ { }} $airport_name]
 
@@ -110,13 +110,15 @@ if {$itinerary eq 1} {
   space20 from
   space20 to
   space20 caller
+space20 from_link
+space20 to_link
 
   set poster1 "http://manurevah.com/lhr/flight_post.php?icao=$icao&flight=$flightnum&regn=$reg&from_iata=$from_iata&to_iata=$to_iata&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon&hdg=$heading"
-  set poster2 "http://jagernot.com/lhr/flight_post.php?icao=$icao&flight=$flightnum&regn=$reg&&from_iata=$from_iata&to_iata=$to_iata&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon&hdg=$heading&link=$link_name"
-
+  set poster2 "http://jagernot.com/lhr/flight_post.php?icao=$icao&flight=$flightnum&regn=$reg&from_iata=$from_iata&to_iata=$to_iata&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon&hdg=$heading&link1=$from_link&link2=$to_link"
+puts "links: $from_link $to_link"
 } else {
   set poster1 "http://manurevah.com/lhr/flight_post.php?&icao=$icao&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon&hdg=$heading"
-  set poster2 "http://jagernot.com/lhr/flight_post.php?&icao=$icao&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon&hdg=$heading&link=$link_name"
+  set poster2 "http://jagernot.com/lhr/flight_post.php?&icao=$icao&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon&hdg=$heading"
 }
 
 exec curl $poster1 >& err &
