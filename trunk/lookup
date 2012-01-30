@@ -1,5 +1,6 @@
 #!/usr/bin/tclsh
 
+#
 proc space20 {w} {
   upvar $w v
   set v [string map {{ } %20} $v]
