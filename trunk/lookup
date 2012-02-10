@@ -88,7 +88,6 @@ if {$itinerary eq 1} {
     incr end -1
 
     set airport_name [string trim [string range $wiki 0 $end]]
-    set airport_name [encoding convertto utf-8 $airport_name]
     set [set i]_link $airport_name
 
 
@@ -101,6 +100,8 @@ if {$itinerary eq 1} {
         set airport_name [string replace $airport_name $first $end {}]
       }
     }
+
+    set airport_name [encoding convertto utf-8 $airport_name]
 
     set $i $airport_name
     puts "$flightnum [set $i]"
@@ -117,6 +118,7 @@ if {$itinerary eq 1} {
 
   puts $fd $caller
   close $fd
+
 
   source twitter.tcl
 
