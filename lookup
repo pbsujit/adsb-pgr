@@ -1,6 +1,16 @@
 #!/usr/bin/tclsh
 
+proc url-decode str {
+    # rewrite "+" back to space
+    # protect \ from quoting another '\'
+    set str [string map [list + { } "\\" "\\\\"] $str]
 
+    # prepare to process all %-escapes
+    regsub -all -- {%([A-Fa-f0-9][A-Fa-f0-9])} $str {\\u00\1} str
+
+    # process \u unicode mapped chars
+    return [subst -novar -nocommand $str]
+}
 
 proc space20 {w} {
   upvar $w v
@@ -101,6 +111,7 @@ if {$itinerary eq 1} {
       }
     }
 
+    set airport_name [url-decode $airport_name]
     set $i $airport_name
     puts "$flightnum [set $i]"
 
