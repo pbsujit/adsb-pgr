@@ -1,5 +1,7 @@
 #!/usr/bin/tclsh
 
+source twitter.tcl
+
 proc space20 {w} {
   upvar $w v
   set v [string map {{ } %20} $v]
@@ -36,6 +38,14 @@ set alt [lindex $argv 7]
 set intent [lindex $argv 8]
 set heading [lindex $argv 9]
 set status [lindex $argv 10]
+
+set flight [string range [lindex $argv 0] 0 2]
+if { [array names airline -exact $flight] ne "" } {
+  set caller $airline($flight)
+} else {
+  set caller unknown
+}
+
 
 foreach i {alt intent} {space20 $i}
 
@@ -97,28 +107,36 @@ if {$itinerary eq 1} {
 
   }
 
+  if {0} {
   set flight [string range [lindex $argv 0] 0 2]
   if { [array names airline -exact $flight] ne "" } {
     set caller $airline($flight)
   } else {
     set caller unknown
-  }
+  }}
 
   puts $fd $caller
   close $fd
 
+  oauth::query_api http://api.twitter.com/1/statuses/update.json $consumer_key $consumer_secret POST $oauth_token $oauth_token_secret [list status "$flightnum | $caller | alti: $alt ft, intent: $intent ft | $reg" lat $lat long $lon]
+
   space20 from
   space20 to
   space20 caller
-space20 from_link
-space20 to_link
+  space20 from_link
+  space20 to_link
 
-  set poster1 "http://manurevah.com/lhr/flight_post.php?icao=$icao&flight=$flightnum&regn=$reg&from_iata=$from_iata&to_iata=$to_iata&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon&hdg=$heading"
+  set poster1 "http://manurevah.com/lhr/flight_post.php?icao=$icao&flight=$flightnum&regn=$reg&from_iata=$from_iata&to_iata=$to_iata&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon&hdg=$heading&from_link=$from_link&to_link=$to_link"
   set poster2 "http://jagernot.com/lhr/flight_post.php?icao=$icao&flight=$flightnum&regn=$reg&from_iata=$from_iata&to_iata=$to_iata&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon&hdg=$heading&link1=$from_link&link2=$to_link"
-puts "links: $from_link $to_link"
+
+  puts "links: $from_link $to_link"
 } else {
   set poster1 "http://manurevah.com/lhr/flight_post.php?&icao=$icao&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon&hdg=$heading"
   set poster2 "http://jagernot.com/lhr/flight_post.php?&icao=$icao&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon&hdg=$heading"
+  #oauth::query_api http://api.twitter.com/1/statuses/update.json $consumer_key $consumer_secret POST $oauth_token $oauth_token_secret [list status "$flightnum | $caller | alt: $alt ft, intent: $intent ft, state: $status | $from -> $to | $reg"]
+
+
+
 }
 
 exec curl $poster1 >& err &
