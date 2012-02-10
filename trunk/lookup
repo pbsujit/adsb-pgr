@@ -1,6 +1,6 @@
 #!/usr/bin/tclsh
 
-source twitter.tcl
+
 
 proc space20 {w} {
   upvar $w v
@@ -46,7 +46,6 @@ if { [array names airline -exact $flight] ne "" } {
   set caller unknown
 }
 
-
 foreach i {alt intent} {space20 $i}
 
 set fd [open out w]
@@ -74,7 +73,7 @@ if {$itinerary eq 1} {
     puts "$code, len = [string length $code]"
     set [set i]_iata $code
 
-    set wiki [exec curl http://en.wikipedia.org/wiki/List_of_airports_by_IATA_code:_[string index $code 0] --connect-timeout 10 2> err]
+    set wiki [exec curl http://en.wikipedia.org/wiki/List_of_airports_by_IATA_code:_[string index $code 0] --connect-timeout 20 2> err]
     set start [string first >$code $wiki]
     set wiki [string range $wiki $start end]
 
@@ -118,7 +117,8 @@ if {$itinerary eq 1} {
   puts $fd $caller
   close $fd
 
-  oauth::query_api http://api.twitter.com/1/statuses/update.json $consumer_key $consumer_secret POST $oauth_token $oauth_token_secret [list status "$flightnum | $caller | alti: $alt ft, intent: $intent ft | $reg" lat $lat long $lon]
+  source twitter.tcl
+
 
   space20 from
   space20 to
@@ -129,7 +129,6 @@ if {$itinerary eq 1} {
   set poster1 "http://manurevah.com/lhr/flight_post.php?icao=$icao&flight=$flightnum&regn=$reg&from_iata=$from_iata&to_iata=$to_iata&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon&hdg=$heading&from_link=$from_link&to_link=$to_link"
   set poster2 "http://jagernot.com/lhr/flight_post.php?icao=$icao&flight=$flightnum&regn=$reg&from_iata=$from_iata&to_iata=$to_iata&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon&hdg=$heading&link1=$from_link&link2=$to_link"
 
-  puts "links: $from_link $to_link"
 } else {
   set poster1 "http://manurevah.com/lhr/flight_post.php?&icao=$icao&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon&hdg=$heading"
   set poster2 "http://jagernot.com/lhr/flight_post.php?&icao=$icao&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon&hdg=$heading"
