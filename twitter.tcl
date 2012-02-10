@@ -37,7 +37,12 @@ if {$twitterok} {
   catch {oauth::query_api http://api.twitter.com/1/statuses/update.json $consumer_key $consumer_secret POST $oauth_token $oauth_token_secret [list status "$flightnum | $reg | $caller | $from -> $to | @ $alt feet"]} err
 
   set f [open log w]
-  puts $f "[clock format [clock seconds]] $err"
+  puts $f "----";
+  puts $f "[clock format [clock seconds]]"
+  foreach {key value} $err {
+    puts "key: $key, value = $value"
+  }
+  puts $f "----";
   close $f
 
 }
