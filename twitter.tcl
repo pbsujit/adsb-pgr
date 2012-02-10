@@ -34,6 +34,10 @@ if {$twitterok} {
   set oauth_token 488703816-NQTamyQdrxvehyQIkNnK5NuCdKT7URlqn9xXmu6m
   set oauth_token_secret BYERXmLerBjRUvDCVHz1WS1ICbyJ39ehmvpYPyCWZKY
 
-  oauth::query_api http://api.twitter.com/1/statuses/update.json $consumer_key $consumer_secret POST $oauth_token $oauth_token_secret [list status "$flightnum | $reg | $caller | $from -> $to | @ $alt feet"]
+  catch {oauth::query_api http://api.twitter.com/1/statuses/update.json $consumer_key $consumer_secret POST $oauth_token $oauth_token_secret [list status "$flightnum | $reg | $caller | $from -> $to | @ $alt feet"]} err
+
+  set f [open log w]
+  puts $f "[clock format [clock seconds]] $err"
+  close $f
 
 }
