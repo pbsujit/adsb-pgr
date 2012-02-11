@@ -1,5 +1,9 @@
 #!/usr/bin/tclsh
 
+lappend auto_path /usr/local/lib/tcllib1.14
+
+package require ncgi
+
 proc url-decode str {
     # rewrite "+" back to space
     # protect \ from quoting another '\'
@@ -111,7 +115,7 @@ if {$itinerary eq 1} {
       }
     }
 
-    set airport_name [url-decode $airport_name]
+    set airport_name [::ncgi::decode $airport_name]
     set $i $airport_name
     puts "$flightnum [set $i]"
 
