@@ -1,9 +1,5 @@
 #!/usr/bin/tclsh
 
-lappend auto_path /usr/local/lib/tcllib1.14
-
-package require ncgi
-
 proc url-decode str {
     # rewrite "+" back to space
     # protect \ from quoting another '\'
@@ -37,7 +33,7 @@ foreach {i j} {
   SYR {Syrian Airlines} VLG {Vueling Airlines} CAL {China Airlines} TAR {Tunis Air} ANA {All Nippon Airways} KQA {Keynya Airways} LOT {LOT - Polish Airlines}
   WZZ {Wizz Air} DAH {Air Algerie} BBC {Biman Bangladesh} MNG {MNG Cargo} RAM {Royal Air Maroc} JAL {Japan Airlines} RJA {Royal Jordanian Airlines} FDX FedEx ARA {Arik Air}
   ATN {Air Transport International} UA {United Airlines} CES {China Eastern Airlines} UZB {Uzbekistan Airways} AHY {Azerbaijan Airlines} LZB {Bulgaria Air} UPS {United Parcel Services}
-  QAF {Qatar Amiri Flight} OAW {Helvetic Airways} VKG {Thomas Cook Airlines} BLX {TUIfly Nordic}
+  QAF {Qatar Amiri Flight} OAW {Helvetic Airways} VKG {Thomas Cook Airlines} BLX {TUIfly Nordic} PTI {PrivatAir} SBI {S7 Airlines} PGT {Pegasus Airlines} CSA {Czech Airlines}
 } {set airline($i) $j}
 
 

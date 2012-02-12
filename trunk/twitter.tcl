@@ -8,7 +8,7 @@ set current_time [clock seconds]
 
 set delta_time [expr $current_time - $last_time]
 
-if { $delta_time > 20 } {
+if { $delta_time > 90 } {
 
   set twitterok 1
 
@@ -24,7 +24,7 @@ if {$twitterok} {
 
   puts "posting twitter";
 
-  #lappend auto_path /usr/local/lib/tcllib1.14
+  lappend auto_path /usr/local/lib/tcllib1.14
   source oauth.tcl
   package require json
 
@@ -41,13 +41,15 @@ if {$twitterok} {
   catch {oauth::query_api http://api.twitter.com/1/account/update_profile_colors.json $consumer_key $consumer_secret POST $oauth_token $oauth_token_secret [list profile_sidebar_fill_color $icao profile_background_color $icao profile_text_color $icao profile_link_color $icao]} err
 
 
-  set f [open log w]
-  puts $f "----";
-  puts $f "[clock format [clock seconds]]"
-  foreach {key value} $err {
-    puts "key: $key, value = $value"
+  if {1} {
+    set f [open log w]
+    puts $f "----";
+    puts $f "[clock format [clock seconds]]"
+    foreach {key value} $err {
+      puts "key: $key, value = $value"
+    }
+    puts $f "----";
+    close $f
   }
-  puts $f "----";
-  close $f
 
 }
