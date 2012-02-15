@@ -28,11 +28,11 @@ if {$twitterok} {
   source oauth.tcl
   package require json
 
-  set consumer_key R1bTLrQ46bIOJHNSMLiA
-  set consumer_secret vstrikyuzW6rvdPPxV4wsAGyvoSITaXJXJzLZoY6nPI
+  set consumer_key igmqo0AGKFJTXNeOpcOg3g
+  set consumer_secret 8lD2DG8TCxxbeGxusJ4JQ9h3jJixlKyCjDo8qMGo6nQ
 
-  set oauth_token 488703816-1TEef70uNf6Ji3lfhoO23kkdraZhCaAWCdxq47Ro
-  set oauth_token_secret 49jp5Ec91YVwKSCx6TwIEpE7cNIBdK2WmrOij9iek
+  set oauth_token 488703816-MhokNuTXiGKL0d6A4FmVjAFXaMzrEdmyBRnbr1FT
+  set oauth_token_secret WSyyHmNwTWHAuUWJduqJTnMfqalUY9soslhqYz0lY
 
   set from [encoding convertfrom utf-8 [subst [regsub -all {%(..)%(..)} $from {[binary format H* \1\2]}]]]
   set to [encoding convertto utf-8 [subst [regsub -all {%(..)%(..)} $to {[binary format H* \1\2]}]]]
