@@ -31,8 +31,8 @@ if {$twitterok} {
   set consumer_key R1bTLrQ46bIOJHNSMLiA
   set consumer_secret vstrikyuzW6rvdPPxV4wsAGyvoSITaXJXJzLZoY6nPI
 
-  set oauth_token 488703816-TLOVdY3hf2qgfEFfVew2Dig3Pf6HDdS5rWIUywcQ
-  set oauth_token_secret xlGLosxkb3pmTd4vKsetMF2I2SgSgXjwLemWXudVc
+  set oauth_token 488703816-1TEef70uNf6Ji3lfhoO23kkdraZhCaAWCdxq47Ro
+  set oauth_token_secret 49jp5Ec91YVwKSCx6TwIEpE7cNIBdK2WmrOij9iek
 
   set from [encoding convertfrom utf-8 [subst [regsub -all {%(..)%(..)} $from {[binary format H* \1\2]}]]]
   set to [encoding convertto utf-8 [subst [regsub -all {%(..)%(..)} $to {[binary format H* \1\2]}]]]
