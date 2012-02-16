@@ -57,6 +57,19 @@ if { [array names airline -exact $flight] ne "" } {
   set caller unknown
 }
 
+if {$reg eq "unknown"} {
+
+  load /usr/lib/sqlite3/libtclsqlite3.so
+  sqlite3 db planes.db
+
+  set D [db eval [list SELECT * FROM AIRCRAFT WHERE ModeS = '$icao']]
+  if {[llength $D]} {
+    set reg [lindex $D 5]
+    set type [lindex $D 6]
+  }
+
+}
+
 foreach i {alt intent} {space20 $i}
 
 set fd [open out w]
