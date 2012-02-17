@@ -24,7 +24,6 @@ if {$twitterok} {
 
   puts "posting twitter";
 
-  lappend auto_path /usr/local/lib/tcllib1.14
   source oauth.tcl
   package require json
 
