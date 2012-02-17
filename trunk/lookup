@@ -155,7 +155,7 @@ if {$itinerary eq 1} {
 
 
   package require json
-  set geocode [exec http://maps.googleapis.com/maps/api/geocode/json?latlong=$lat,$lon&sensor=true --connect-timeout 20 2> err]
+  set geocode [exec curl http://maps.googleapis.com/maps/api/geocode/json?latlong=$lat,$lon&sensor=true --connect-timeout 20 2> err]
   set geocode [::json::json2dict $geocode]
   foreach {key value} $geocode {
     puts "key: $key, value: $value"
