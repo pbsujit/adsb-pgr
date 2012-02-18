@@ -39,16 +39,4 @@ if {$twitterok} {
   catch {oauth::query_api http://api.twitter.com/1/statuses/update.json $consumer_key $consumer_secret POST $oauth_token $oauth_token_secret [list status "$flightnum | $reg | $type | $caller | $from -> $to | @ $alt feet | http://jagernot.com/lhr/ | #aviation" lat $lat long $lon]} err
   catch {oauth::query_api http://api.twitter.com/1/account/update_profile_colors.json $consumer_key $consumer_secret POST $oauth_token $oauth_token_secret [list profile_sidebar_fill_color $icao profile_background_color $icao profile_text_color $icao profile_link_color $icao]} err
 
-
-  if {1} {
-    set f [open log w]
-    puts $f "----";
-    puts $f "[clock format [clock seconds]]"
-    foreach {key value} $err {
-      puts "key: $key, value = $value"
-    }
-    puts $f "----";
-    close $f
-  }
-
 }
