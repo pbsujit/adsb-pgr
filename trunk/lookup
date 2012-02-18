@@ -146,7 +146,6 @@ if {$itinerary eq 1} {
 
   source twitter.tcl
 
-
   space20 from
   space20 to
   space20 caller
@@ -156,6 +155,8 @@ if {$itinerary eq 1} {
 
   package require json
   set geocode [exec curl http://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lon]
+  puts $geocode
+
   set D [::json::json2dict $geocode]
   foreach {key value} {
     puts "$key $value"
