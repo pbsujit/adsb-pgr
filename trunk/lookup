@@ -156,6 +156,17 @@ if {$itinerary eq 1} {
 
   package require json
   set geocode [exec curl http://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lon&sensor=true --connect-timeout 20 2> err]
+
+  set ndl1 {"formatted_address" : }
+  set ndl2 "\","
+
+  set first [string first $ndl1 $geocode]
+  set end [string first $ndl2 $geocode]
+  incr first [string length $ndl1]
+
+  set addr [string range $first $end]
+  puts $addr
+
   set geocode [::json::json2dict $geocode]
   set results [dict get $geocode results]
   set address_components [dict get $results address_components]
