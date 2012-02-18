@@ -158,7 +158,7 @@ if {$itinerary eq 1} {
   puts $geocode
 
   set D [::json::json2dict $geocode]
-  foreach {key value} {
+  foreach {key value} $D {
     puts "$key $value"
   }
 
