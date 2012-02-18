@@ -155,23 +155,11 @@ if {$itinerary eq 1} {
 
 
   package require json
-  set geocode [exec curl http://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lon&sensor=true --connect-timeout 20 2> err]
-
-  set ndl1 {"formatted_address" : }
-  set ndl2 "\","
-
-  set first [string first $ndl1 $geocode]
-  set end [string first $ndl2 $geocode]
-  incr first [string length $ndl1]
-
-  set addr [string range $first $end]
-  puts $addr
-
-  set geocode [::json::json2dict $geocode]
-  set results [dict get $geocode results]
-  set address_components [dict get $results address_components]
-  foreach {num street sublocality locality admin country postal_code postal_town} $address_components {}
-  puts "address: $num $street $sublocality $locality $admin $country $postal_code $postal_town"
+  set geocode [exec curl http://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lon
+  set D [::json::json2dict $geocode]
+  foreach {key value} {
+    puts "$key $value"
+  }
 
   set poster1 "http://manurevah.com/lhr/flight_post.php?icao=$icao&flight=$flightnum&regn=$reg&from_iata=$from_iata&to_iata=$to_iata&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon&hdg=$heading&from_link=$from_link&to_link=$to_link"
   set poster2 "http://jagernot.com/lhr/flight_post.php?icao=$icao&flight=$flightnum&regn=$reg&from_iata=$from_iata&to_iata=$to_iata&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon&hdg=$heading&link1=$from_link&link2=$to_link"
