@@ -83,8 +83,11 @@ set fd [open out w]
 
   set D [::json::json2dict $geocode]
   set addr [dict get $D address]
-  set address "[dict get $addr city], [dict get $addr county]"
+  puts "dict keys: [dict keys $addr]"
 
+  #set address "[dict get $addr city], [dict get $addr county]"
+
+  set address {}
   space20 address
 
 if {$itinerary eq 1} {
