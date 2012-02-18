@@ -84,18 +84,18 @@ set fd [open out w]
   set addr [dict get $D address]
   puts "dict keys: [dict keys $addr]"
 
-  set road {some_road}
+  set road {some road}
   if {[dict exists $addr road]} {
     set road [dict get $addr road]
   }
 
-  set county {some_county}
+  set county {some county}
   if {[dict exists $addr county]} {
     set county [dict get $addr county]
   }
 
-  set county [string map {{County Council} {} {Royal Borough of} {}} $county]
-  set address "$road, $county"
+  set county [string map {{County Council} {} {Royal Borough of } {} {Greater } {}} $county]
+  set address "$road in $county"
 
   space20 address
 
