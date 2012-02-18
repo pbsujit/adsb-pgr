@@ -155,7 +155,7 @@ if {$itinerary eq 1} {
 
 
   package require json
-  set geocode [exec curl http://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lon
+  set geocode [exec curl http://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lon]
   set D [::json::json2dict $geocode]
   foreach {key value} {
     puts "$key $value"
