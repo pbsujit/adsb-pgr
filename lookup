@@ -76,6 +76,17 @@ foreach i {alt intent} {space20 $i}
 
 set fd [open out w]
 
+
+  package require json
+  set geocode [exec curl http://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lon 2> err]
+  puts $geocode
+
+  set D [::json::json2dict $geocode]
+  set addr [dict get $D address]
+  set address "[dict get $addr city], [dict get $addr county]"
+
+  space20 address
+
 if {$itinerary eq 1} {
 
   set html [exec curl http://data.flight24.com/airplanes/$reg/ --connect-timeout 10 2> err]
@@ -152,22 +163,12 @@ if {$itinerary eq 1} {
   space20 from_link
   space20 to_link
 
-
-  package require json
-  set geocode [exec curl http://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lon 2> err]
-  puts $geocode
-
-  set D [::json::json2dict $geocode]
-  foreach {key value} $D {
-    puts "$key $value"
-  }
-
-  set poster1 "http://manurevah.com/lhr/flight_post.php?icao=$icao&flight=$flightnum&regn=$reg&from_iata=$from_iata&to_iata=$to_iata&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon&hdg=$heading&from_link=$from_link&to_link=$to_link"
-  set poster2 "http://jagernot.com/lhr/flight_post.php?icao=$icao&flight=$flightnum&regn=$reg&from_iata=$from_iata&to_iata=$to_iata&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon&hdg=$heading&link1=$from_link&link2=$to_link"
+  set poster1 "http://manurevah.com/lhr/flight_post.php?icao=$icao&flight=$flightnum&regn=$reg&from_iata=$from_iata&to_iata=$to_iata&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon&hdg=$heading&from_link=$from_link&to_link=$to_link&address=$address"
+  set poster2 "http://jagernot.com/lhr/flight_post.php?icao=$icao&flight=$flightnum&regn=$reg&from_iata=$from_iata&to_iata=$to_iata&from=$from&to=$to&type=$type&airline=$caller&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon&hdg=$heading&link1=$from_link&link2=$to_link&address=$address"
 
 } else {
-  set poster1 "http://manurevah.com/lhr/flight_post.php?&icao=$icao&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon&hdg=$heading"
-  set poster2 "http://jagernot.com/lhr/flight_post.php?&icao=$icao&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon&hdg=$heading"
+  set poster1 "http://manurevah.com/lhr/flight_post.php?&icao=$icao&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon&hdg=$heading&address=$address"
+  set poster2 "http://jagernot.com/lhr/flight_post.php?&icao=$icao&alt=$alt&intent=$intent&status=$status&lat=$lat&lon=$lon&hdg=$heading&address=$address"
 
 }
 
