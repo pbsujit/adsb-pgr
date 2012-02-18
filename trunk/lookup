@@ -84,12 +84,12 @@ set fd [open out w]
   set addr [dict get $D address]
   puts "dict keys: [dict keys $addr]"
 
-  set road {This Road}
+  set road {This road}
   if {[dict exists $addr road]} {
     set road [dict get $addr road]
   }
 
-  set county {That County}
+  set county {this County}
   if {[dict exists $addr county]} {
     set county [dict get $addr county]
   }
