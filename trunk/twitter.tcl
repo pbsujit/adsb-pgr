@@ -16,8 +16,6 @@ if { $delta_time > 90 } {
     puts $f $current_time
   close $f
 
-} else {
-  puts "$delta_time is delta"
 }
 
 if {$twitterok} {
