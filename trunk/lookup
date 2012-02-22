@@ -95,12 +95,16 @@ set fd [open out w]
     set road [dict get $addr road]
   }}
 
+  if {0} {
   set county {this County}
   if {[dict exists $addr county]} {
     set county [dict get $addr county]
-  }
+  }}
 
-  set county [string map {{County Council} {} {Royal Borough of } {}} $county]
+  #set county [string map {{County Council} {} {Royal Borough of } {}} $county]
+
+  set county [dict get $addr [lindex $keys 1]]
+
   set address "$road in $county"
 
   space20 address
