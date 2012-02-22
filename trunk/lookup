@@ -78,16 +78,22 @@ set fd [open out w]
 
 
   package require json
-  set geocode [exec curl http://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lon 2> err]
+  #set geocode [exec curl http://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lon 2> err]
+  set geocode [exec curl http://open.mapquestapi.com/nominatim/v1/reverse?format=json&&lat=$lat&lon=$lon 2> err]
 
   set D [::json::json2dict $geocode]
   set addr [dict get $D address]
+
   puts "dict keys: [dict keys $addr]"
 
+  set keys [dict keys $addr]
+  set road [dict get $addr [lindex $keys 0]]
+
+  if {0} {
   set road {This road}
   if {[dict exists $addr road]} {
     set road [dict get $addr road]
-  }
+  }}
 
   set county {this County}
   if {[dict exists $addr county]} {
