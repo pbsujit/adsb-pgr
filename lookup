@@ -36,7 +36,7 @@ foreach {i j} {
   WZZ {Wizz Air} DAH {Air Algerie} BBC {Biman Bangladesh} MNG {MNG Cargo} RAM {Royal Air Maroc} JAL {Japan Airlines} RJA {Royal Jordanian Airlines} FDX FedEx ARA {Arik Air}
   ATN {Air Transport International} UA {United Airlines} CES {China Eastern Airlines} UZB {Uzbekistan Airways} AHY {Azerbaijan Airlines} LZB {Bulgaria Air} UPS {United Parcel Services}
   QAF {Qatar Amiri Flight} OAW {Helvetic Airways} VKG {Thomas Cook Airlines} BLX {TUIfly Nordic} PTI {PrivatAir} SBI {S7 Airlines} PGT {Pegasus Airlines} CSA {Czech Airlines}
-  CFG {Condor Flugdienst} CSN {China Southern Airlines} NVR Novair GWI Germanwings BCS DHL AMX Mexicana SMX {Alitalia Express} SQC {Singapore Airlines Cargo}
+  CFG {Condor Flugdienst} CSN {China Southern Airlines} NVR Novair GWI Germanwings BCS DHL AMX Mexicana SMX {Alitalia Express} SQC {Singapore Airlines Cargo} BOX Aerologic
 } {set airline($i) $j}
 
 
