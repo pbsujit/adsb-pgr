@@ -53,6 +53,7 @@ set heading [lindex $argv 9]
 set status [lindex $argv 10]
 
 set flight [string range [lindex $argv 0] 0 2]
+
 if { [array names airline -exact $flight] ne "" } {
   set caller $airline($flight)
 } else {
@@ -149,6 +150,9 @@ if {$itinerary eq 1} {
 
 
     set airport_name [string map {_ { }} $airport_name]
+    if {[string length $airport_name] > 25} {
+      set airport_name [string map {International Intl Internacional Intl} $airport_name]
+    }
 
     set first [string first { Airport} $airport_name]
     if {$first ne "-1"} {
