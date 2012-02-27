@@ -150,7 +150,7 @@ if {$itinerary eq 1} {
 
 
     set airport_name [string map {_ { } Airport {}} $airport_name]
-    if {[string length $airport_name] > 30} {
+    if {[string length $airport_name] > 25} {
       set airport_name [string map {International Intl Internacional Intl} $airport_name]
     }
 
