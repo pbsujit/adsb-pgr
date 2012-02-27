@@ -102,14 +102,13 @@ set fd [open out w]
     }
   }
 
-  set county {this County}
+  set county {in this County}
   if {[dict exists $addr county]} {
     set county [dict get $addr county]
+    set county [string map {{County Council} {} {Royal Borough of } {}} $county]
   }
 
-  set county [string map {{County Council} {} {Royal Borough of } {}} $county]
-
-  set address "$road in $county"
+  set address "$road $county"
 
   space20 address
 
