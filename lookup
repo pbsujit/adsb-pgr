@@ -90,10 +90,10 @@ set fd [open out w]
   set keys [dict keys $addr]
   set key0 [lindex $keys 0]
   set road [dict get $addr $key0]
-  if {[llength $road] == 1} {
+  if {0} {if {[llength $road] == 1} {
     set key0 [string map {_ { }} $key0]
     set road "$road ($key0)"
-  }
+  }}
 
   if {0} {
     set road {This road}
