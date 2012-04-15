@@ -61,6 +61,7 @@ if { [array names airline -exact $flight] ne "" } {
   set caller unknown
 }
 
+if {0} {
 if {$reg eq "unknown"} {
 
   load /usr/lib/libtclsqlite3.so
@@ -72,6 +73,7 @@ if {$reg eq "unknown"} {
     set type [lindex $D 6]
   }
 
+}
 }
 
 foreach i {alt intent} {space20 $i}
