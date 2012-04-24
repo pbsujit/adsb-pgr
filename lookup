@@ -81,7 +81,7 @@ set fd [open out w]
 
   set loc [dict get $addr $key0]
   if {[string first { } $loc] eq -1} {
-    set loc "$loc ($key0)"
+    set loc "$key0 of $loc"
   }
 
   set county {in this County}
