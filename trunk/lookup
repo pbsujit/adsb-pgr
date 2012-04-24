@@ -2,18 +2,6 @@
 
 lappend auto_path /usr/local/lib/tcllib1.14
 
-proc url-decode str {
-    # rewrite "+" back to space
-    # protect \ from quoting another '\'
-    set str [string map [list + { } "\\" "\\\\"] $str]
-
-    # prepare to process all %-escapes
-    regsub -all -- {%([A-Fa-f0-9][A-Fa-f0-9])} $str {\\u00\1} str
-
-    # process \u unicode mapped chars
-    return [subst -novar -nocommand $str]
-}
-
 proc space20 {w} {
   upvar $w v
   set v [string map {{ } %20} $v]
@@ -61,7 +49,6 @@ if { [array names airline -exact $flight] ne "" } {
   set caller unknown
 }
 
-if {0} {
 if {$reg eq "unknown"} {
 
   load /usr/lib/libtclsqlite3.so
@@ -74,7 +61,6 @@ if {$reg eq "unknown"} {
   }
 
 }
-}
 
 foreach i {alt intent} {space20 $i}
 
@@ -83,25 +69,19 @@ set fd [open out w]
 
   package require json
 
-  set geocode [exec curl http://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lon 2> err]
-  #set geocode [exec curl http://open.mapquestapi.com/nominatim/v1/reverse?format=json&&lat=$lat&lon=$lon 2> err]
+  #set geocode [exec curl http://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lon 2> err]
+  set geocode [exec curl http://open.mapquestapi.com/nominatim/v1/reverse?format=json&&lat=$lat&lon=$lon 2> err]
 
   set D [::json::json2dict $geocode]
   set addr [dict get $D address]
 
   set keys [dict keys $addr]
-  set key0 [lindex $keys 0]
-  set road [dict get $addr $key0]
-  if {0} {if {[llength $road] == 1} {
-    set key0 [string map {_ { }} $key0]
-    set road "$road ($key0)"
-  }}
 
-  if {0} {
-    set road {This road}
-    if {[dict exists $addr road]} {
-      set road [dict get $addr road]
-    }
+  set key0 [lindex $keys 0]
+
+  set loc [dict get $addr $key0]
+  if {[string first { } $loc] eq -1} {
+    set loc "$loc ($key0)"
   }
 
   set county {in this County}
@@ -110,7 +90,7 @@ set fd [open out w]
     set county [string map {{County Council} {} {Royal Borough of } {}} $county]
   }
 
-  set address "$road $county"
+  set address "$loc $county"
 
   space20 address
 
