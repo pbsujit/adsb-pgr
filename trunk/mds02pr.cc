@@ -177,13 +177,13 @@ int p_ref (void)
     info& d = plane_info [a.icao];
     state& s = plane_state [a.flight_number];
     string flightid (a.p->acident);
-    if (flightid.length() < 3) flightid = "unknown";
+    if (flightid.length() < 3) flightid = "XXX000";
     sprintf (altitude, "%05d", (int) s.alt);
     sprintf (intent, "%05d", (int) s.fcu_alt);
     sprintf (status, "%s", s.stat.c_str());
     if (d.reg.length () < 3) {
-      d.reg = "unknown";
-      d.type = "unknown";
+      d.reg = "------";
+      d.type = "------";
       d.lookup = lookup_timeout;
     }
 
