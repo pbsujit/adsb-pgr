@@ -107,7 +107,7 @@ struct info { // from web lookup
   string to;
 
   int lookup;
-  info () : reg("unknown"), airline("unknown"), type("unknown"), from("unknown"), to("unknown"), lookup (lookup_timeout) {}
+  info () : reg("------"), airline("------"), type("------"), from("------"), to("------"), lookup (lookup_timeout) {}
 
 };
 
@@ -177,7 +177,7 @@ int p_ref (void)
     info& d = plane_info [a.icao];
     state& s = plane_state [a.flight_number];
     string flightid (a.p->acident);
-    if (flightid.length() < 3) flightid = "XXX000";
+    if (flightid.length() < 3) flightid = "------";
     sprintf (altitude, "%05d", (int) s.alt);
     sprintf (intent, "%05d", (int) s.fcu_alt);
     sprintf (status, "%s", s.stat.c_str());
