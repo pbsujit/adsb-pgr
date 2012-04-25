@@ -141,12 +141,12 @@ int p_ref (void)
       planes.push_back (aircraft (p));
       aircraft& plane = planes [planes.size() - 1];
       state& ps = plane_state [plane.flight_number];
+
       if (ps.stat == "unknown") {
         ps.stat = "level at ";
         ps.last_alt = ps.alt = ps.fcu_alt = p->alt;
         ps.last_lat = ps.lat = p->lat;
         ps.last_lon = ps.lon = p->lon;
-
       } else {
         ps.alt = p->alt;
         ps.lat = p->lat;
@@ -159,9 +159,11 @@ int p_ref (void)
         ps.last_lat = ps.lat;
         ps.last_lon = ps.lon;
       }
+
       // round fcu_alt to nearest 10
       ps.fcu_alt = p->bds.fcu_alt_40 - (int) p->bds.fcu_alt_40 % 10;
       if (ps.fcu_alt < 0) ps.fcu_alt = 0;
+
     }
   }
 
@@ -193,6 +195,7 @@ int p_ref (void)
     }
 
     if (((int)s.delta_alt != 0) || (get_from_to == "1") || (s.delta_lat != 0) || (s.delta_lon != 0)) {
+
       ss.clear ();
       ss << a.lat << ' ' << a.lon;
       ss >> latitude >> longitude;
@@ -200,9 +203,10 @@ int p_ref (void)
       ss.clear ();
       ss << a.p->bds.hdg_60;
       string heading; ss >> heading;
-      cout << "heading = " << heading << ' ' << a.p->bds.hdg_60 << endl;
+
       string cmd("./lookup " + flightid + ' ' + a.icao + ' ' + d.reg + ' ' + d.type + ' ' + get_from_to + ' ' + latitude + ' ' + longitude + ' ' + altitude + ' ' + intent + ' ' + heading + ' ' + status + bg);
       system (cmd.c_str());
+
       if (get_from_to == "1") {
         ifstream fout ("out");
         fout.getline (from, SIZE, '\n');
@@ -213,11 +217,13 @@ int p_ref (void)
         d.airline = airline;
         system ("rm -f out");
       }
+
     }
 
     if (show == "both" || show == s.stat || show == "level") {
       if (s.stat == "ascending to") printf ("\e[1;35m"); else if (s.stat == "descending to") printf ("\e[1;31m");
       printf ("%03d %8s %6s %6s %4s %05.0f %13s %05.0f %s -> %s (%s) \n", ++k, a.flight_number.c_str(), a.icao.c_str(), d.reg.c_str(), d.type.c_str(), s.alt, s.stat.c_str(), s.fcu_alt, d.from.c_str(), d.to.c_str(), d.airline.c_str());
+
     }
     printf ("\e[0;30m");
   }
@@ -265,7 +271,7 @@ main(int argc, char** argv)
 
   /* loop until terminated manually by <CTRL>-C */
 
-  while(1) /* loop forever */ {
+  while (1) /* loop forever */ {
     printf("%s",top);
     printf ("%3s %8s %6s %6s %4s %5s %19s %s\n", "No:", "Flight  ", "ICAO  ", "Regn  ", "Type", "  Alt", "     State", "From -> To");
     p_ref();
