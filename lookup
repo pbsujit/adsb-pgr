@@ -131,7 +131,7 @@ if {$itinerary eq 1} {
     incr end -1
 
     set airport_name [string trim [string range $wiki 0 $end]]
-    set airport_name [string map {" '} $airport_name]
+    set airport_name [string map {\" '} $airport_name]
     set [set i]_link $airport_name
 
 
