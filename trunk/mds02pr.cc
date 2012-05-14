@@ -107,7 +107,7 @@ struct info { // from web lookup
   string to;
 
   int lookup;
-  info () : reg("------"), airline("------"), type("------"), from("------"), to("------"), lookup (lookup_timeout) {}
+  info () : reg("------"), airline("------"), type("----"), from("------"), to("------"), lookup (lookup_timeout) {}
 
 };
 
@@ -183,7 +183,7 @@ int p_ref (void)
     sprintf (status, "%s", s.stat.c_str());
     if (d.reg.length () < 3) {
       d.reg = "------";
-      d.type = "------";
+      d.type = "----";
       d.lookup = lookup_timeout;
     }
 
