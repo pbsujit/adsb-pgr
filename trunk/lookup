@@ -49,7 +49,13 @@ if { [array names airline -exact $flight] ne "" } {
   set caller unknown
 }
 
-if {$reg eq "unknown"} {
+set reghtml [exec curl http://data.flight24.com/_ajaxcalls/autocomplete_airplanes.php?typing=$icao --connect-timeout 10 2> err]
+set regfirst [string first ' $reghtml]
+set regend [string first , $reghtml]
+set reg [string range $reghtml $regfirst $regend]
+
+if {0} {
+if {$reg eq "------"} {
 
   load /usr/lib/libtclsqlite3.so
   sqlite3 db planes.db
@@ -60,7 +66,7 @@ if {$reg eq "unknown"} {
     set type [lindex $D 6]
   }
 
-}
+}}
 
 foreach i {alt intent} {space20 $i}
 
@@ -96,9 +102,10 @@ set fd [open out w]
 
 if {$itinerary eq 1} {
 
+
   set html [exec curl http://data.flight24.com/airplanes/$reg/ --connect-timeout 10 2> err]
 
-  set start [string first {route from} $html]
+  set start [string first {CET  from} $html]
   set html [string range $html $start end]
 
   foreach i {from to} {
