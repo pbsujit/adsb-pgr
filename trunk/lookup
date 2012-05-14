@@ -66,7 +66,7 @@ if {$reg eq "------"} {
     set reg [string range $reghtml [incr regfirst] [incr regend -1]]
   }
 
-}}
+}
 
 foreach i {alt intent} {space20 $i}
 
