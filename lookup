@@ -52,7 +52,7 @@ if { [array names airline -exact $flight] ne "" } {
 set reghtml [exec curl http://data.flight24.com/_ajaxcalls/autocomplete_airplanes.php?typing=$icao --connect-timeout 10 2> err]
 set regfirst [string first ' $reghtml]
 set regend [string first , $reghtml]
-set reg [string range $reghtml [incr regfirst] [incr regend]]
+set reg [string range $reghtml [incr regfirst] [incr regend -1]]
 
 if {0} {
 if {$reg eq "------"} {
