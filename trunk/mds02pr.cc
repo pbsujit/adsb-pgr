@@ -208,11 +208,12 @@ int p_ref (void)
       ss << a.p->bds.hdg_60;
       string heading; ss >> heading;
 
-      ss.clear ();
-      ss << s.groundspeed * 1.15077945;
-      string gspeed; ss >> gspeed;
-
-      cout << "ground speed = " << gspeed << endl;
+      string gspeed;
+      if (s.groundspeed < 0) gspeed = "---"; else {
+        ss.clear ();
+        ss << s.groundspeed * 1.15077945;
+        ss >> gspeed;
+      }
 
       string cmd("./lookup " + flightid + ' ' + a.icao + ' ' + d.reg + ' ' + d.type + ' ' + get_from_to + ' ' + latitude + ' ' + longitude + ' ' + altitude + ' ' + intent + ' ' + heading + ' ' + status + ' ' + gspeed + bg);
       system (cmd.c_str());
