@@ -40,10 +40,7 @@ set alt [lindex $argv 7]
 set intent [lindex $argv 8]
 set heading [lindex $argv 9]
 set status [lindex $argv 10]
-set speed [lindex $argv 11]
-
-puts "speed = $speed"
-puts "argv = $argv"
+set speed [lindex $argv 12]
 
 set flight [string range [lindex $argv 0] 0 2]
 
