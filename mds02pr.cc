@@ -88,12 +88,14 @@ struct state {
   double fcu_alt; // intended altitude
   double lat, last_lat, lon, last_lon;
   double delta_lat, delta_lon;
+  double groundspeed;
 
   state () : stat ("unknown") {
     alt = last_alt = fcu_alt = 0;
     lat = last_lat = lon = last_lon = 0;
     delta_lat = delta_lon = 0;
     delta_alt = 0;
+    groundspeed = 0;
   }
 
 };
@@ -164,6 +166,8 @@ int p_ref (void)
       ps.fcu_alt = p->bds.fcu_alt_40 - (int) p->bds.fcu_alt_40 % 10;
       if (ps.fcu_alt < 0) ps.fcu_alt = 0;
 
+      ps.groundspeed = p->bds.g_speed_50;
+
     }
   }
 
@@ -203,6 +207,12 @@ int p_ref (void)
       ss.clear ();
       ss << a.p->bds.hdg_60;
       string heading; ss >> heading;
+
+      ss.clear ();
+      ss << s.groundspeed;
+      string gspeed; ss >> gspeed;
+
+      cout << "ground speed = " << gspeed << endl;
 
       string cmd("./lookup " + flightid + ' ' + a.icao + ' ' + d.reg + ' ' + d.type + ' ' + get_from_to + ' ' + latitude + ' ' + longitude + ' ' + altitude + ' ' + intent + ' ' + heading + ' ' + status + bg);
       system (cmd.c_str());
