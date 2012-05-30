@@ -209,12 +209,12 @@ int p_ref (void)
       string heading; ss >> heading;
 
       ss.clear ();
-      ss << s.groundspeed;
+      ss << s.groundspeed * 1.15077945;
       string gspeed; ss >> gspeed;
 
       cout << "ground speed = " << gspeed << endl;
 
-      string cmd("./lookup " + flightid + ' ' + a.icao + ' ' + d.reg + ' ' + d.type + ' ' + get_from_to + ' ' + latitude + ' ' + longitude + ' ' + altitude + ' ' + intent + ' ' + heading + ' ' + status + bg);
+      string cmd("./lookup " + flightid + ' ' + a.icao + ' ' + d.reg + ' ' + d.type + ' ' + get_from_to + ' ' + latitude + ' ' + longitude + ' ' + altitude + ' ' + intent + ' ' + heading + ' ' + status + ' ' + gspeed + bg);
       system (cmd.c_str());
 
       if (get_from_to == "1") {
