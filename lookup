@@ -43,6 +43,7 @@ set status [lindex $argv 10]
 set speed [lindex $argv 11]
 
 puts "speed = $speed"
+puts "argv = $argv"
 
 set flight [string range [lindex $argv 0] 0 2]
 
