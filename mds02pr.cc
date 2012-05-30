@@ -213,6 +213,7 @@ int p_ref (void)
         ss.clear ();
         ss << (int)(s.groundspeed * 1.15077945);
         ss >> gspeed;
+        cout << "ground speed = " << gspeed << endl;
       }
 
       string cmd("./lookup " + flightid + ' ' + a.icao + ' ' + d.reg + ' ' + d.type + ' ' + get_from_to + ' ' + latitude + ' ' + longitude + ' ' + altitude + ' ' + intent + ' ' + heading + ' ' + status + ' ' + gspeed + bg);
