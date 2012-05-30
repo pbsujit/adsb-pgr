@@ -42,6 +42,8 @@ set heading [lindex $argv 9]
 set status [lindex $argv 10]
 set speed [lindex $argv 11]
 
+puts "speed = $speed"
+
 set flight [string range [lindex $argv 0] 0 2]
 
 if { [array names airline -exact $flight] ne "" } {
