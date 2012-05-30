@@ -211,7 +211,7 @@ int p_ref (void)
       string gspeed;
       if (s.groundspeed < 0) gspeed = "---"; else {
         ss.clear ();
-        ss << s.groundspeed * 1.15077945;
+        ss << (int)(s.groundspeed * 1.15077945);
         ss >> gspeed;
       }
 
